@@ -192,17 +192,17 @@ function getAvailableWithType($StartTime,$EndTime,$Date,$Type){
     WHERE LotID in (SELECT LotID
 	FROM schedule as s
 	WHERE s.UserTypeID = '$Type' AND
-	(CASE WHEN StartTime <  EndTime THEN 
-   (((('$StartTime' NOT BETWEEN StartTime AND EndTime) AND ('$EndTime' NOT BETWEEN StartTime AND EndTime)) OR
-      ('$StartTime' <= StartTime AND '$EndTime' = StartTime) OR 
-      ('$StartTime' = EndTime AND '$EndTime' >= EndTime)) AND
-      ('$StartTime' > StartTime OR '$EndTime' < EndTime))
+(CASE WHEN StartTime <  EndTime THEN 
+    ((('$StartTime' >= EndTime AND '$EndTime' > EndTime) OR
+      ('$StartTime' < StartTime AND '$EndTime' <= StartTime)) AND
+      ('$StartTime' > StartTime OR '$EndTime' < EndTime) AND
+      ((('$StartTime' < StartTime) OR ('$StartTime' > EndTime) AND ('$EndTime' < StartTime) OR ('$EndTime' > EndTime))))
     ELSE
-   (((('$StartTime' NOT BETWEEN EndTime AND StartTime) AND ('$EndTime' NOT BETWEEN EndTime AND StartTime))  OR
-      ('$StartTime' <= EndTime AND '$EndTime' = EndTime) OR 
-      ('$StartTime' = StartTime AND '$EndTime' >= StartTime)) AND
-      ('$StartTime' > EndTime OR '$EndTime' < StartTime))
-	 END))
+    ((('$StartTime' >= StartTime AND '$EndTime' > StartTime) OR
+      ('$StartTime' < EndTime AND '$EndTime' <= EndTime)) AND
+      ('$StartTime' > EndTime OR '$EndTime' < StartTime) AND
+      ((('$StartTime' < EndTime) OR ('$StartTime' > StartTime) AND ('$EndTime' < EndTime) OR ('$EndTime' > StartTime))))
+ END))
 	GROUP BY p.LotID";
     $result = $mysqli->query($sql);
 
