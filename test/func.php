@@ -142,7 +142,7 @@ function getAvailable($StartTime,$EndTime,$Date){
          }
     catch(PDOException $e)
     {
-        die ('PDO error in getReservation()": ' . $e->getMessage() );
+        die ('PDO error in getAvailable()": ' . $e->getMessage() );
     }
 }
 
@@ -214,7 +214,7 @@ function getAvailableWithType($StartTime,$EndTime,$Date,$Type){
          }
     catch(PDOException $e)
     {
-        die ('PDO error in getReservation()": ' . $e->getMessage() );
+        die ('PDO error in getAvailableWithType()": ' . $e->getMessage() );
     }
 }
 
