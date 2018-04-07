@@ -142,14 +142,14 @@ function getAvailable($StartTime,$EndTime,$Date){
          }
     catch(PDOException $e)
     {
-        die ('PDO error in getAvailable()": ' . $e->getMessage() );
+        die ('PDO error in getReservation()": ' . $e->getMessage() );
     }
 }
 
 /***
-*This will display the lots that the user can reserve for, depending on the usertypeid and the times chosen
+*This will display the lots that the user can reserve for, depending on the permitid and the times chosen
 *
-*Input is the starttime, endtime, date and usertypeid
+*Input is the starttime, endtime, date and permitid
 *Output will be lotid, lotname, lotstatus, the total which is the number of avaliable spots in json format
 *
 *Furthor notes this function will not work if the starttime is lesser then the endtime
@@ -162,14 +162,16 @@ function getAvailable($StartTime,$EndTime,$Date){
 *The starttime before 8:00 and and endtime inbetween 8:00 to 12:00
 *The starttime inbetween 8:00 to 12:00 and and after 12:00
 *The starttime after 8:00 and before 12:00
-*
-*In the subquery clause in the where clauaw will list the LotID that are valid with usertypeID and starttime and endtime
-*The cases check when the starttime is less then the endtime I will use 10:00 to 12:00 as the schedule start and end times
-*After the THEN it will check the input times with the schedule times, the schedule time being true such as 10:00 to 12:00 
-*it will first check to see if the start  and end tims input is NOT between 10:00 to 12:00
-*Using NOT between makes 9:00 to 10:00 false and 12:00 to 13:00 false(Which I don't want)
-*To make them true I use two OR to check for spefic conditions
-*I then And everything and check to see if 9:00 to 13:00 is invalid
+*In the subquery clause in the where clause will list the LotID that are valid with permitid and starttime and endtime
+*The cases check when the starttime is less then the endtime I will use 8:00 to 12:00 as the schedule start and end times
+*After the THEN it will check the input times with the schedule times, the schedule time being true such as 8:00 to 12:00 
+*First it will check if the inputed starttime and endtime is greater then the schedule endtime
+*Second it will check if the inputed starttime and endtime is greater then the schedule starttime
+*Then it will compare to boolean expression that if either of them is false will return false 
+*First will check if the inputed starttime is greater then schedule starttime and that the endtime is greater
+*then the endtime, if it is then the schedule times are a subset then the expression returns false
+*The last long expression checks to see if the inputed starttime and endtime is in the schedule times
+*If it is then the expression return false
 *After the THEN it is the ELSE clause which would check if the endtime is greater then the starttime
 *Like 6:00 to 2:00
 *It mirrors the THEN clause accept the Endtime and Starttime are switched
@@ -191,7 +193,7 @@ function getAvailableWithType($StartTime,$EndTime,$Date,$Type){
 	LEFT JOIN reservation as r USING (LotID)
     WHERE LotID in (SELECT LotID
 	FROM schedule as s
-	WHERE s.UserTypeID = '$Type' AND
+	WHERE s.PermitID = '$Type' AND
 (CASE WHEN StartTime <  EndTime THEN 
     ((('$StartTime' >= EndTime AND '$EndTime' > EndTime) OR
       ('$StartTime' < StartTime AND '$EndTime' <= StartTime)) AND
@@ -214,7 +216,7 @@ function getAvailableWithType($StartTime,$EndTime,$Date,$Type){
          }
     catch(PDOException $e)
     {
-        die ('PDO error in getAvailableWithType()": ' . $e->getMessage() );
+        die ('PDO error in getReservation()": ' . $e->getMessage() );
     }
 }
 
