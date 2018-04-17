@@ -119,7 +119,7 @@ function deleteUser($id){
 function getAvailable($StartTime,$EndTime,$Date){
     include 'config.php';
      try {
-    $sql = "SELECT LotID,LotName,LotStatus, (MaxCapacity - DisabledSpots - ReservationSpots - 
+    $sql = "SELECT LotID,LotName,LotStatus, (ReservationSpots - 
 	(SELECT count(ReservationID) 
 	FROM parkinglot as p2
 	LEFT JOIN reservation as r2 USING (LotID)
@@ -179,7 +179,7 @@ function getAvailable($StartTime,$EndTime,$Date){
 function getAvailableWithType($StartTime,$EndTime,$Date,$Type){
     include 'config.php';
      try {
-    $sql = "SELECT LotID,LotName,LotStatus, (MaxCapacity - DisabledSpots - ReservationSpots - 
+    $sql = "SELECT LotID,LotName,LotStatus, (ReservationSpots - 
 	(SELECT count(ReservationID) 
 	FROM parkinglot as p2
 	LEFT JOIN reservation as r2 USING (LotID)
@@ -187,7 +187,7 @@ function getAvailableWithType($StartTime,$EndTime,$Date,$Type){
            (('$EndTime' > StartTime) AND ('$EndTime' <= EndTime))) OR
            (('$StartTime' <= StartTime) AND ('$EndTime' > StartTime)) OR
            (('$StartTime' < EndTime) AND ('$EndTime' >= EndTime))) AND Date = '$Date' AND
-	p2.LotID = p.LotID))
+	p2.LotID = p.LotID AND r2.ReservationStatus = 1))
 	as total 
 	FROM parkinglot as p
 	LEFT JOIN reservation as r USING (LotID)
@@ -220,4 +220,129 @@ function getAvailableWithType($StartTime,$EndTime,$Date,$Type){
     }
 }
 
+
+/***
+*These will change the status of a lot to open or closed
+*
+*Input is the lot id
+*Output will boolean of true or false if succesful or not
+*NEEDS FIXING BOOLEAN
+***/	
+function closeLot($id){
+	include 'config.php';
+	$sql = "UPDATE parkinglot SET LotStatus = 0 WHERE LotID = $id";
+	if ($mysqli->query($sql)==true){
+		echo "true";
+	}
+	else{
+	echo "false";
+	}
+}
+function openLot($id){
+	include 'config.php';
+	$sql = "UPDATE parkinglot SET LotStatus = 1 WHERE LotID = $id";
+	if ($mysqli->query($sql)==true){
+		echo "true";
+	}
+	else{
+	echo "false";
+	}
+}
+
+/***
+*These will update the status of a lot to allow a lot to be reservable or not
+*
+*Input is the lot id
+*Output will boolean of true or false if succesful or not
+*NEEDS FIXING BOOLEAN
+***/	
+function unreserveLot($id){
+	include 'config.php';
+	$sql = "UPDATE parkinglot SET isReservable = 0 WHERE LotID = $id";
+	if ($mysqli->query($sql)==true){
+		echo "true";
+	}
+	else{
+	echo "false";
+	}
+}
+function reserveLot($id){
+	include 'config.php';
+	$sql = "UPDATE parkinglot SET isReservable = 1 WHERE LotID = $id";
+	if ($mysqli->query($sql)==true){
+		echo "true";
+	}
+	else{
+	echo "false";
+	}
+}
+
+//Users
+
+/***
+*These will update the User status to prevent user from making reservation
+*
+*Input is the user id
+*Output will boolean of true or false if succesful or not
+*NEEDS FIXING BOOLEAN
+***/	
+function lockUser($id){
+	include 'config.php';
+	$sql = "UPDATE user SET Status = 0 WHERE UserID = '$id'";
+	if ($mysqli->query($sql)==true){
+		echo "true";
+	}
+	else{
+	echo "false";
+	}
+}
+function unlockUser($id){
+	include 'config.php';
+	$sql = "UPDATE user SET Status = 1 WHERE UserID = '$id'";
+	if ($mysqli->query($sql)==true){
+		echo "true";
+	}
+	else{
+	echo "false";
+	}
+}
+
+//Complaints
+
+
+/***
+*This will add a complaint to the complaints table
+*
+*Input is the user id, report
+*Output will boolean of true or false if succesful or not
+***/	
+function newComplaint($uid, $report){
+	include 'config.php';
+	$sql = "INSERT INTO `complaints` (`ComplaintID`, `UserID`, `Report`, `TimestampComplaint`) VALUES (NULL,'$uid', '$report',CURRENT_TIMESTAMP)";
+	if ($mysqli->query($sql)==true){
+		echo "true";
+	}
+	else{
+	echo "false";
+	}
+}
+/***
+*This will remove a complaint from the commplaints table
+*
+*Input is the complaint id
+*Output will boolean of true or false if succesful or not
+*
+*NEEDS FIXING BOOLEAN
+***/	
+function removeComplaint($id){
+	include 'config.php';
+	$sql = "DELETE FROM `complaints` WHERE `ComplaintID`= $id";
+	if ($mysqli->query($sql)==true){
+		echo "true";
+	}
+	else{
+	echo "false";
+	}
+	
+}
 ?>

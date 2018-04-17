@@ -50,9 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 		$endtime = $_GET['endtime'];
 		$type = $_GET['type'];
 		
-		$StartTime = date(" H:i:s", substr($starttime, 0, 10));
-		$EndTime = date(" H:i:s", substr($endtime, 0, 10));
+		
+		$StartTime = date("H:i:s", substr($starttime, 0, 10));
+		$EndTime = date("H:i:s", substr($endtime, 0, 10));
 		$Date = date("Y-m-d", substr($starttime, 0, 10));
+		
 		
 		echo getAvailableWithType($StartTime,$EndTime,$Date,$type);
 		http_response_code(200);
@@ -69,9 +71,11 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 		$starttime = $_GET['starttime'];
 		$endtime = $_GET['endtime'];
 		
+		
 		$StartTime = date(" H:i:s", substr($starttime, 0, 10));
 		$EndTime = date(" H:i:s", substr($endtime, 0, 10));
 		$Date = date("Y-m-d", substr($starttime, 0, 10));
+		
 		
 		echo getAvailable($StartTime,$EndTime,$Date);
 		http_response_code(200);
@@ -111,6 +115,27 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			echo postUser($name, $email, $username, $password, $isDisable, $status);
 			http_response_code(200);
 		}
+		/***
+		*This will get the add a new complaint to the database
+		*
+		*The url will be (table = complaints)
+		*
+		*Input will be a post body with the complaint info
+		*Output will be a boolean of true or false
+		***/
+		if($_GET['table'] == "complaints"){
+			$postBody = file_get_contents("php://input");
+			$postBody = json_decode($postBody);
+			
+			$id = "id";
+			$report = "report";
+			
+			$id = $postBody->$id;
+			$report = $postBody->$report;
+			
+			echo newComplaint($id, $report);
+			http_response_code(200);
+		}
 	} 
 }
 else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
@@ -132,6 +157,86 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		}
 		
 	}
+	else if(isset($_GET['function'])&& isset($_GET['id'])){
+		/***
+		*This will update the user status to be 1 or in boolean true
+		*
+		*The url will be (function = unlockUser & id = 'specfic user id' )
+		*
+		*Input will be the user id
+		*Output will be a boolean of true or false
+		***/
+		if($_GET['function'] == "unlockUser"){
+			$id = $_GET['id'];
+			echo unlockUser($id);
+			http_response_code(200);
+		}
+		/***
+		*This will update the user status to be 0 or in boolean false
+		*
+		*The url will be (function = lockUser & id = 'specfic user id' )
+		*
+		*Input will be the user id
+		*Output will be a boolean of true or false
+		***/
+		else if($_GET['function'] == "lockUser"){
+			$id = $_GET['id'];
+			echo lockUser($id);
+			http_response_code(200);
+		}
+		/***
+		*This will update the parkinglot isReservable to be 1 or in boolean true
+		*
+		*The url will be (function = reserveLot & id = 'specfic parkinglot id' )
+		*
+		*Input will be the parkinglot id
+		*Output will be a boolean of true or false
+		***/
+		else if($_GET['function'] == "reserveLot"){
+			$id = $_GET['id'];
+			echo reserveLot($id);
+			http_response_code(200);
+		}
+		/***
+		*This will update the parkinglot isReservable to be 0 or in boolean false
+		*
+		*The url will be (function = unreserveLot & id = 'specfic parkinglot id' )
+		*
+		*Input will be the parkinglot id
+		*Output will be a boolean of true or false
+		***/
+		else if($_GET['function'] == "unreserveLot"){
+			$id = $_GET['id'];
+			echo unreserveLot($id);
+			http_response_code(200);
+		}
+		/***
+		*This will update the parkinglot LotStatus to be 1 or in boolean true
+		*
+		*The url will be (function = openLot & id = 'specfic parkinglot id' )
+		*
+		*Input will be the parkinglot id
+		*Output will be a boolean of true or false
+		***/
+		else if($_GET['function'] == "openLot"){
+			$id = $_GET['id'];
+			echo openLot($id);
+			http_response_code(200);
+		}
+		/***
+		*This will update the parkinglot LotStatus to be 0 or in boolean false
+		*
+		*The url will be (function = closeLot & id = 'specfic parkinglot id' )
+		*
+		*Input will be the parkinglot id
+		*Output will be a boolean of true or false
+		***/
+		else if($_GET['function'] == "closeLot"){
+			$id = $_GET['id'];
+			echo closeLot($id);
+			http_response_code(200);
+		}
+	}
 }
 else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
 	if(isset($_GET['table']) && isset($_GET['id'])){
@@ -147,6 +252,22 @@ else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
 			$id = $_GET['id'];
 			echo deleteUser($id);
 			http_response_code(200);
+		}
+		/***
+		*This will get the delete a complaint in the database
+		*
+		*The url will be (table = complaints & id = 'specfic user id')
+		*
+		*Input will the complaints id
+		*Output will be a boolean of true or false
+		***/
+		else if($_GET['table'] == "complaints"){
+			
+			$id = $_GET['id'];
+			echo removeComplaint($id);
+			http_response_code(200);
+			
+			
 		}
 		
 	}
