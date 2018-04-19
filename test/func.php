@@ -220,7 +220,93 @@ function getAvailableWithType($StartTime,$EndTime,$Date,$Type){
     }
 }
 
+//Lots
 
+/***
+*This will add a lot to the lot table
+*
+*Input is the schedule id, lot name, max capacity ,disabledspot, reservation spots, lot status which is tinybit, reservability status which is tinybit
+*Output will boolean of true or false if succesful or not
+***/	
+
+function newLot($lotname, $max, $dspots, $rspots, $lstatus, $reservable){
+	include 'config.php';
+	$sql = "INSERT INTO `parkinglot`(`LotID`, `LotName`, `MaxCapacity`, `DisabledSpots`, `ReservationSpots`, `LotStatus`, `isReservable`) 
+	VALUES (NULL , '$lotname', '$max', '$dspots', '$rspots', '$lstatus', '$reservable')";
+	if ($mysqli->query($sql)==true){
+		echo "true";
+	}
+	else{
+	echo "false";
+	}
+}
+/***
+*This will update a lot max capacity , disabledspots , and reservation spots in the lot table
+*
+*Input is the lot id, max capacity ,disabledspot, reservation spots
+*Output will boolean of true or false if succesful or not
+***/	
+function updateLot($id, $max, $dspots, $rspots){
+	include 'config.php';
+	$sql = "UPDATE `parkinglot` SET `MaxCapacity`='$max',`DisabledSpots`='$dspots',`ReservationSpots`='$rspots' WHERE `LotID`='$id'";
+	if ($mysqli->query($sql)==true){
+		echo "true";
+	}
+	else{
+	echo "false";
+	}
+}
+/***
+*This will add a schedule to the schedule table
+*
+*Input is the lot id, permit id, startime ,endtime
+*Permit id: 1 Commuter, 2 Resident 3 Employee 
+*Output will boolean of true or false if succesful or not
+***/	
+
+function newSchedule($lotid, $pid, $starttime, $endtime){
+	include 'config.php';
+	$sql = "INSERT INTO `schedule`(`ScheduleID`, `LotID`, `PermitID`, `StartTime`, `EndTime`) 
+	VALUES (NULL ,'$lotid', '$pid', '$starttime', '$endtime')";
+	if ($mysqli->query($sql)==true){
+		echo "true";
+	}
+	else{
+	echo "false";
+	}
+}
+/***
+*This will change the schedule of a lot to a schedule from the schedule table
+*
+*Input is the lot id,schedule id
+*Output will boolean of true or false if succesful or not
+***/	
+function changeLotSchedule($lotid, $id){
+	include 'config.php';
+	$sql = "UPDATE `schedule` SET `LotID`=$lotid WHERE `ScheduleID` = $id";
+	if ($mysqli->query($sql)==true){
+		echo "true";
+	}
+	else{
+	echo "false";
+	}
+}
+/***
+*This will remove a lot from the lot table
+*
+*Input is the lot id
+*Output will boolean of true or false if succesful or not
+***/	
+function removeLot($id){
+	include 'config.php';
+	$sql = "DELETE FROM `parkinglot` WHERE `LotID`= $id";
+	if ($mysqli->query($sql)==true){
+		echo "true";
+	}
+	else{
+	echo "false";
+	}
+}
 /***
 *These will change the status of a lot to open or closed
 *
@@ -345,4 +431,41 @@ function removeComplaint($id){
 	}
 	
 }
+
+//Reservations
+
+/***
+*This will add a reservation to the reservation table
+*
+*Input is the lot id, user id, date, startime ,endtime
+*Output will boolean of true or false if succesful or not
+***/	
+function newReservation($lotid, $uid, $date,$starttime, $endtime){
+	include 'config.php';
+	$sql = "INSERT INTO `reservation`(`ReservationID`, `LotID`, `UserID`, `NotifyID`, `Date`, `StartTime`, `EndTime`, `CheckInTime`, `CheckOutTime`, `ReservationStatus`, `ReservationTimestamp`) 
+	VALUES (NULL,'$lotid','$uid',NULL,'$date','$starttime','$endtime', NULL, NULL, 1,CURRENT_TIMESTAMP)";
+	if ($mysqli->query($sql)==true){
+		echo "true";
+	}
+	else{
+	echo "false";
+	}
+}
+/***
+*This will cancel a reservation from the reservation table
+*
+*Input is the reservation id
+*Output will boolean of true or false if succesful or not
+***/
+function cancelReservation($id){
+	include 'config.php';
+	$sql = "UPDATE `reservation` SET `ReservationStatus` = 0 WHERE `ReservationID` = '$id'";
+	if ($mysqli->query($sql)==true){
+		echo "true";
+	}
+	else{
+	echo "false";
+	}
+}
+
 ?>
