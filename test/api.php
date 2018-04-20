@@ -244,7 +244,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		}
 		
 	}
-	else if(isset($_GET['function'])&& isset($_GET['id']) && isset($_GET['m']) && isset($_GET['d']) && isset($_GET['r'])) {
+	else if(isset($_GET['function'])&& isset($_GET['id']) && isset($_GET['max']) && isset($_GET['dspots']) && isset($_GET['rspots'])) {
 		/***
 		*This will update a lot  max capacity , number of disabled spots, and number of reservation spots
 		*
@@ -255,9 +255,9 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		***/
 		if($_GET['function'] == "updateLot"){
 			$id = $_GET['id'];
-			$max = $_GET['m'];
-			$dspots = $_GET['d'];
-			$rspots = $_GET['r'];
+			$max = $_GET['max'];
+			$dspots = $_GET['dspots'];
+			$rspots = $_GET['rspots'];
 	
 			echo updateLot($id, $max, $dspots, $rspots);
 			http_response_code(200);
@@ -372,10 +372,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 			echo cancelReservation($id);
 			http_response_code(200);
 		}
-	}
-	
-	 
-	
+	}	
 }
 else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
 	if(isset($_GET['table']) && isset($_GET['id'])){
@@ -405,8 +402,6 @@ else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
 			$id = $_GET['id'];
 			echo removeComplaint($id);
 			http_response_code(200);
-			
-			
 		} 
 		/***
 		*This will get the delete a lot in the database
@@ -416,13 +411,10 @@ else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
 		*Input will the complaints id
 		*Output will be a boolean of true or false
 		***/
-		if($_GET['table'] == "parkinglot"){
-			
+		if($_GET['table'] == "parkinglot"){			
 			$id = $_GET['id'];
 			echo removeLot($id);
-			http_response_code(200);
-			
-			
+			http_response_code(200);	
 		}
 		
 	}
@@ -436,6 +428,4 @@ else if($_SERVER['REQUEST_METHOD'] == "OPTIONS") {
 else {
          http_response_code(405);
 }
-
-
 ?>
