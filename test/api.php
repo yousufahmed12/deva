@@ -18,20 +18,47 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 			$id = $_GET['id'];
 			echo getUser($id);
 			http_response_code(200);
+		}		
+	}
+	else if(isset($_GET['get'])){
+		/***
+		*This will get the user status info
+		*
+		*The url will be (get = userStatus& id = 'the users id')
+		*
+		*Input is the user id
+		*Output is a json with the user information
+		***/
+		if($_GET['get'] == "userStatus"){
+			$id = $_GET['id'];
+			echo getUserStatus($id);
+			http_response_code(200);
 		}
-		
+		/***
+		*This will get the user email info
+		*
+		*The url will be (get = Email & id = 'the users id')
+		*
+		*Input is the user id
+		*Output is a json with the user information
+		***/
+		if($_GET['get'] == "Email"){
+			$id = $_GET['id'];
+			echo getEmail($id);
+			http_response_code(200);
+		}
 	}
 	else if(isset($_GET['table'])){
 		/***
 		*This will get all the data inside the table that is chosen
 		*
 		*The url will be (table = 'name of the table')
-		*
+		* 
 		*Input is the name of the table
 		*Output is a json of all the data inside the table
 		***/
-		if($_GET['table']){
-			
+		//deny user
+		if($_GET['table']){			
 			$table = $_GET['table'];
 			echo getTable($table);
 			http_response_code(200);
@@ -49,13 +76,11 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 		$starttime = $_GET['starttime'];
 		$endtime = $_GET['endtime'];
 		$type = $_GET['type'];
-		
-		
+				
 		$StartTime = date("H:i:s", substr($starttime, 0, 10));
 		$EndTime = date("H:i:s", substr($endtime, 0, 10));
 		$Date = date("Y-m-d", substr($starttime, 0, 10));
-		
-		
+				
 		echo getAvailableWithType($StartTime,$EndTime,$Date,$type);
 		http_response_code(200);
 	}
@@ -70,19 +95,15 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 		***/
 		$starttime = $_GET['starttime'];
 		$endtime = $_GET['endtime'];
-		
-		
+				
 		$StartTime = date(" H:i:s", substr($starttime, 0, 10));
 		$EndTime = date(" H:i:s", substr($endtime, 0, 10));
 		$Date = date("Y-m-d", substr($starttime, 0, 10));
 		
-		
 		echo getAvailable($StartTime,$EndTime,$Date);
 		http_response_code(200);
 	}
-		
-	
-
+			
 }
 else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 	if(isset($_GET['table'])){
@@ -241,8 +262,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 			$newName = $_GET['newName'];
 			echo putName($id,$newName);
 			http_response_code(200);
-		}
-		
+		}	
 	}
 	else if(isset($_GET['function'])&& isset($_GET['id']) && isset($_GET['max']) && isset($_GET['dspots']) && isset($_GET['rspots'])) {
 		/***
@@ -263,6 +283,31 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 			http_response_code(200);
 		}
 	}
+	else if(isset($_GET['function']) && isset($_GET['id']) && isset($_GET['amount'])){
+		/***
+		*These will update a lot number of disabled spots, or number of reservation spots
+		*
+		*The url will be (function = updateLot & id = 'specfic lot id' & amount = 'new # of disabled spots, or reservation spots'  )
+		*
+		*Input will be the lot id, number of disabled spots, or number of reservation spots
+		*Output will be a boolean of true or false
+		***/
+	
+		if($_GET['function'] == "updateLotDSpots"){
+			$id = $_GET['id'];
+			$amount = $_GET['amount'];
+	
+			echo updateLotDSpots($id, $amount);
+			http_response_code(200);
+		}
+		else if($_GET['function'] == "updateLotRSpots"){
+			$id = $_GET['id'];
+			$amount = $_GET['amount'];
+	
+			echo updateLotRSpots($id,$amount);
+			http_response_code(200);
+		}		
+	}
 	else if(isset($_GET['function']) && isset($_GET['id']) && isset($_GET['lotid'])){
 		/***
 		*This will set a schedule to a specfic lot
@@ -277,8 +322,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 			$id = $_GET['id'];
 			echo changeLotSchedule($lotid, $id);
 			http_response_code(200);
-		}
-		
+		}		
 	}
 	else if(isset($_GET['function'])&& isset($_GET['id'])){
 		/***
@@ -375,16 +419,16 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 	}	
 }
 else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
-	if(isset($_GET['table']) && isset($_GET['id'])){
+	if(isset($_GET['remove']) && isset($_GET['id'])){
 		/***
 		*This will get the delete a user in the database
 		*
-		*The url will be (table = user & id = 'specfic user id')
+		*The url will be (remove = user & id = 'specfic user id')
 		*
 		*Input will the user id
 		*Output will be a boolean of true or false
 		***/
-		if($_GET['table'] == "user"){
+		if($_GET['remove'] == "user"){
 			$id = $_GET['id'];
 			echo deleteUser($id);
 			http_response_code(200);
@@ -392,28 +436,43 @@ else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
 		/***
 		*This will get the delete a complaint in the database
 		*
-		*The url will be (table = complaints & id = 'specfic complaint id')
+		*The url will be (remove = complaints & id = 'specfic complaint id')
 		*
 		*Input will the complaints id
 		*Output will be a boolean of true or false
 		***/
-		if($_GET['table'] == "complaints"){
+		if($_GET['remove'] == "complaints"){
 			
 			$id = $_GET['id'];
 			echo removeComplaint($id);
-			http_response_code(200);
+			http_response_code(200);		
 		} 
 		/***
 		*This will get the delete a lot in the database
 		*
-		*The url will be (table = parkinglot & id = 'specfic lot id')
+		*The url will be (remove = parkinglot & id = 'specfic lot id')
 		*
-		*Input will the complaints id
+		*Input will the lot id
 		*Output will be a boolean of true or false
 		***/
-		if($_GET['table'] == "parkinglot"){			
+		if($_GET['remove'] == "parkinglot"){
+			
 			$id = $_GET['id'];
 			echo removeLot($id);
+			http_response_code(200);
+		}
+		/***
+		*This will get the delete a schedule in the database
+		*
+		*The url will be (remove = schedule & id = 'specfic schedule id')
+		*
+		*Input will the schedule id
+		*Output will be a boolean of true or false
+		***/
+		if($_GET['remove'] == "schedule"){
+			
+			$id = $_GET['id'];
+			echo removeSchedule($id);
 			http_response_code(200);	
 		}
 		
