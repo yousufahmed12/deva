@@ -11,13 +11,18 @@ function getTable($table){
 	$sql = "SELECT * FROM $table";
 	$result = $mysqli->query($sql);
 		
-	$result_array = array();
+	if($result->num_rows > 0){	
+		$result_array = array();
 		while($row = $result->fetch_assoc()){
 			$result_array[] = $row;
 		}
-	echo json_encode($result_array);
+		echo json_encode($result_array);
 	}
-	
+	else
+	{
+		echo "Check your input or else it does not exist.";
+	}
+}	
 /***
 *This will add a user to the user table
 *
@@ -29,10 +34,10 @@ function postUser($name, $email,$username,$password, $isDisable,$status){
 	$sql = "INSERT INTO `user` (`UserID`, `PermitID`, `UserTypeID`, `Name`, `Email`, `Username`, `Token`, `isDisabled`, `Status`) 
 	VALUES (NULL, NULL, NULL, '$name', '$email', '$username', '$password', '$isDisable', '$status')";
 	if ($mysqli->query($sql)==true){
-		echo "true";
+		echo "Successfully added: " . mysqli_affected_rows($mysqli);
 	}
 	else{
-	echo "false";
+	echo("Error description: " . mysqli_error($mysqli));
 	}
 }
 
@@ -47,11 +52,17 @@ function getUser($id){
 	$sql = "SELECT * FROM user WHERE UserID = $id";
 	$result = $mysqli->query($sql);
 		
-	$result_array = array();
+	if($result->num_rows > 0){	
+		$result_array = array();
 		while($row = $result->fetch_assoc()){
 			$result_array[] = $row;
 		}
 		echo json_encode($result_array);
+	}
+	else
+	{
+		echo "Check your input or else it does not exist.";
+	}
 }
 		
 /***
@@ -63,18 +74,24 @@ function getUser($id){
 function putName($id,$newName){
 	include 'config.php';
 	$sql = "UPDATE webservice.user SET Name = '$newName' WHERE UserID = $id";
-		if ($mysqli->query($sql)==true){
+	if ($mysqli->query($sql)==true){
 		$sql = "SELECT * FROM user WHERE UserID = $id";
 		$result = $mysqli->query($sql);
 		
-		$result_array = array();
-		while($row = $result->fetch_assoc()){
-		$result_array[] = $row;
-	}
-	echo json_encode($result_array);
+		if($result->num_rows > 0){	
+			$result_array = array();
+			while($row = $result->fetch_assoc()){
+				$result_array[] = $row;
+			}
+			echo json_encode($result_array);
+		}
+		else
+		{
+			echo "Check your input or else it does not exist.";
+		}
 	}
 	else{
-	echo "false";
+	echo("Error description: " . mysqli_error($mysqli));
 	}
 }
 
@@ -88,10 +105,10 @@ function deleteUser($id){
 	include 'config.php';
 	$sql = "DELETE FROM user WHERE UserID = $id";
 	if ($mysqli->query($sql)==true){
-		echo "true";
+		echo "Successfully removed: " . mysqli_affected_rows($mysqli);
 	}
 	else{
-	echo "false";
+	echo("Error description: " . mysqli_error($mysqli));
 	}
 }
 
@@ -118,7 +135,7 @@ function deleteUser($id){
 ***/
 function getAvailable($StartTime,$EndTime,$Date){
     include 'config.php';
-     try {
+    
     $sql = "SELECT LotID,LotName,LotStatus, (ReservationSpots - 
 	(SELECT count(ReservationID) 
 	FROM parkinglot as p2
@@ -134,16 +151,17 @@ function getAvailable($StartTime,$EndTime,$Date){
 	GROUP BY p.LotID";
     $result = $mysqli->query($sql);
 
-    $result_array = array();
-        while($row = $result->fetch_assoc()){
-            $result_array[] = $row;
-        }
-        echo json_encode($result_array);
-         }
-    catch(PDOException $e)
-    {
-        die ('PDO error in getReservation()": ' . $e->getMessage() );
-    }
+    if($result->num_rows > 0){	
+		$result_array = array();
+		while($row = $result->fetch_assoc()){
+			$result_array[] = $row;
+		}
+		echo json_encode($result_array);
+	}
+	else
+	{
+		echo "Check your input or else it does not exist.";
+	}
 }
 
 /***
@@ -178,7 +196,7 @@ function getAvailable($StartTime,$EndTime,$Date){
 ***/
 function getAvailableWithType($StartTime,$EndTime,$Date,$Type){
     include 'config.php';
-     try {
+    
     $sql = "SELECT LotID,LotName,LotStatus, (ReservationSpots - 
 	(SELECT count(ReservationID) 
 	FROM parkinglot as p2
@@ -208,16 +226,17 @@ function getAvailableWithType($StartTime,$EndTime,$Date,$Type){
 	GROUP BY p.LotID";
     $result = $mysqli->query($sql);
 
-    $result_array = array();
-        while($row = $result->fetch_assoc()){
-            $result_array[] = $row;
-        }
-        echo json_encode($result_array);
-         }
-    catch(PDOException $e)
-    {
-        die ('PDO error in getReservation()": ' . $e->getMessage() );
-    }
+    if($result->num_rows > 0){	
+		$result_array = array();
+		while($row = $result->fetch_assoc()){
+			$result_array[] = $row;
+		}
+		echo json_encode($result_array);
+	}
+	else
+	{
+		echo "Check your input or else it does not exist.";
+	}
 }
 
 //Lots
@@ -234,10 +253,10 @@ function newLot($lotname, $max, $dspots, $rspots, $lstatus, $reservable){
 	$sql = "INSERT INTO `parkinglot`(`LotID`, `LotName`, `MaxCapacity`, `DisabledSpots`, `ReservationSpots`, `LotStatus`, `isReservable`) 
 	VALUES (NULL , '$lotname', '$max', '$dspots', '$rspots', '$lstatus', '$reservable')";
 	if ($mysqli->query($sql)==true){
-		echo "true";
+		echo "Successfully added: " . mysqli_affected_rows($mysqli);
 	}
 	else{
-	echo "false";
+	echo("Error description: " . mysqli_error($mysqli));
 	}
 }
 /***
@@ -250,10 +269,42 @@ function updateLot($id, $max, $dspots, $rspots){
 	include 'config.php';
 	$sql = "UPDATE `parkinglot` SET `MaxCapacity`='$max',`DisabledSpots`='$dspots',`ReservationSpots`='$rspots' WHERE `LotID`='$id'";
 	if ($mysqli->query($sql)==true){
-		echo "true";
+		echo "Successful updates: " . mysqli_affected_rows($mysqli);
 	}
 	else{
-	echo "false";
+	echo("Error description: " . mysqli_error($mysqli));
+	}
+}
+/***
+*This will update a lot disabledspots in the lot table
+*
+*Input is the lot id, disabledspot
+*Output will boolean of true or false if succesful or not
+***/	
+function updateLotDSpots($id, $dspots){
+	include 'config.php';
+	$sql = "UPDATE `parkinglot` SET `DisabledSpots`='$dspots' WHERE `LotID`='$id'";
+	if ($mysqli->query($sql)==true){
+		echo "Successful updates: " . mysqli_affected_rows($mysqli);
+	}
+	else{
+	echo("Error description: " . mysqli_error($mysqli));
+	}
+}
+/***
+*This will update a lot  reservation spots in the lot table
+*
+*Input is the lot id, reservation spots
+*Output will boolean of true or false if succesful or not
+***/	
+function updateLotRSpots($id, $rspots){
+	include 'config.php';
+	$sql = "UPDATE `parkinglot` SET `ReservationSpots`='$rspots' WHERE `LotID`='$id'";
+	if ($mysqli->query($sql)==true){
+		echo "Successful updates: " . mysqli_affected_rows($mysqli);
+	}
+	else{
+	echo("Error description: " . mysqli_error($mysqli));
 	}
 }
 /***
@@ -269,10 +320,26 @@ function newSchedule($lotid, $pid, $starttime, $endtime){
 	$sql = "INSERT INTO `schedule`(`ScheduleID`, `LotID`, `PermitID`, `StartTime`, `EndTime`) 
 	VALUES (NULL ,'$lotid', '$pid', '$starttime', '$endtime')";
 	if ($mysqli->query($sql)==true){
-		echo "true";
+		echo "Successfully added: " . mysqli_affected_rows($mysqli);
 	}
 	else{
-	echo "false";
+	echo("Error description: " . mysqli_error($mysqli));
+	}
+}
+/***
+*This will remove a schedule from the schedule table
+*
+*Input is the schedule id
+*Output will boolean of true or false if succesful or not
+***/	
+function removeSchedule($id){
+	include 'config.php';
+	$sql = "DELETE FROM `schedule` WHERE `ScheduleID`= '$id'";
+	if ($mysqli->query($sql)==true){
+		echo "Successfully removed: " . mysqli_affected_rows($mysqli);
+	}
+	else{
+	echo("Error description: " . mysqli_error($mysqli));
 	}
 }
 /***
@@ -283,12 +350,12 @@ function newSchedule($lotid, $pid, $starttime, $endtime){
 ***/	
 function changeLotSchedule($lotid, $id){
 	include 'config.php';
-	$sql = "UPDATE `schedule` SET `LotID`=$lotid WHERE `ScheduleID` = $id";
+	$sql = "UPDATE `schedule` SET `LotID`=$lotid WHERE `ScheduleID` = '$id'";
 	if ($mysqli->query($sql)==true){
-		echo "true";
+		echo "Successful updates: " . mysqli_affected_rows($mysqli);
 	}
 	else{
-	echo "false";
+	echo("Error description: " . mysqli_error($mysqli));
 	}
 }
 /***
@@ -299,12 +366,12 @@ function changeLotSchedule($lotid, $id){
 ***/	
 function removeLot($id){
 	include 'config.php';
-	$sql = "DELETE FROM `parkinglot` WHERE `LotID`= $id";
+	$sql = "DELETE FROM `parkinglot` WHERE `LotID`= '$id'";
 	if ($mysqli->query($sql)==true){
-		echo "true";
+		echo "Successfully removed: " . mysqli_affected_rows($mysqli);
 	}
 	else{
-	echo "false";
+	echo("Error description: " . mysqli_error($mysqli));
 	}
 }
 /***
@@ -318,20 +385,20 @@ function closeLot($id){
 	include 'config.php';
 	$sql = "UPDATE parkinglot SET LotStatus = 0 WHERE LotID = $id";
 	if ($mysqli->query($sql)==true){
-		echo "true";
+		echo "Successful updates: " . mysqli_affected_rows($mysqli);
 	}
 	else{
-	echo "false";
+	echo("Error description: " . mysqli_error($mysqli));
 	}
 }
 function openLot($id){
 	include 'config.php';
 	$sql = "UPDATE parkinglot SET LotStatus = 1 WHERE LotID = $id";
 	if ($mysqli->query($sql)==true){
-		echo "true";
+		echo "Successful updates: " . mysqli_affected_rows($mysqli);
 	}
 	else{
-	echo "false";
+	echo("Error description: " . mysqli_error($mysqli));
 	}
 }
 
@@ -346,20 +413,20 @@ function unreserveLot($id){
 	include 'config.php';
 	$sql = "UPDATE parkinglot SET isReservable = 0 WHERE LotID = $id";
 	if ($mysqli->query($sql)==true){
-		echo "true";
+		echo "Successful updates: " . mysqli_affected_rows($mysqli);
 	}
 	else{
-	echo "false";
+	echo("Error description: " . mysqli_error($mysqli));
 	}
 }
 function reserveLot($id){
 	include 'config.php';
 	$sql = "UPDATE parkinglot SET isReservable = 1 WHERE LotID = $id";
 	if ($mysqli->query($sql)==true){
-		echo "true";
+		echo "Successful updates: " . mysqli_affected_rows($mysqli);
 	}
 	else{
-	echo "false";
+	echo("Error description: " . mysqli_error($mysqli));
 	}
 }
 
@@ -376,20 +443,65 @@ function lockUser($id){
 	include 'config.php';
 	$sql = "UPDATE user SET Status = 0 WHERE UserID = '$id'";
 	if ($mysqli->query($sql)==true){
-		echo "true";
+		echo "Successful updates: " . mysqli_affected_rows($mysqli);
 	}
 	else{
-	echo "false";
+	echo("Error description: " . mysqli_error($mysqli));
 	}
 }
 function unlockUser($id){
 	include 'config.php';
 	$sql = "UPDATE user SET Status = 1 WHERE UserID = '$id'";
 	if ($mysqli->query($sql)==true){
-		echo "true";
+		echo "Successful updates: " . mysqli_affected_rows($mysqli);
 	}
 	else{
-	echo "false";
+	echo("Error description: " . mysqli_error($mysqli));
+	}
+}
+/***
+*This will get a specific user email from the user table
+*
+*Input is the userid
+*Output will be the user info in a json format
+***/	
+function getEmail($id){
+	include 'config.php';
+	$sql = "SELECT `Email` FROM `user` WHERE `UserID` = '$id'";
+	$result = $mysqli->query($sql);
+		
+	if($result->num_rows > 0){	
+		$result_array = array();
+		while($row = $result->fetch_assoc()){
+			$result_array[] = $row;
+		}
+		echo json_encode($result_array);
+	}
+	else
+	{
+		echo "Check your input or else it does not exist.";
+	}
+}
+/*This will get a specific user status from the user table
+*
+*Input is the userid
+*Output will be the user info in a json format
+***/	
+function getUserStatus($id){
+	include 'config.php';
+	$sql = "SELECT `Status` FROM `user` WHERE `UserID` = '$id'";
+	$result = $mysqli->query($sql);
+	
+	if($result->num_rows > 0){	
+		$result_array = array();
+		while($row = $result->fetch_assoc()){
+			$result_array[] = $row;
+		}
+		echo json_encode($result_array);
+	}
+	else
+	{
+		echo "Check your input or else it does not exist.";
 	}
 }
 
@@ -406,10 +518,10 @@ function newComplaint($uid, $report){
 	include 'config.php';
 	$sql = "INSERT INTO `complaints` (`ComplaintID`, `UserID`, `Report`, `TimestampComplaint`) VALUES (NULL,'$uid', '$report',CURRENT_TIMESTAMP)";
 	if ($mysqli->query($sql)==true){
-		echo "true";
+		echo "Successfully added: " . mysqli_affected_rows($mysqli);
 	}
 	else{
-	echo "false";
+	echo("Error description: " . mysqli_error($mysqli));
 	}
 }
 /***
@@ -424,10 +536,10 @@ function removeComplaint($id){
 	include 'config.php';
 	$sql = "DELETE FROM `complaints` WHERE `ComplaintID`= $id";
 	if ($mysqli->query($sql)==true){
-		echo "true";
+		echo "Successfully removed: " . mysqli_affected_rows($mysqli);
 	}
 	else{
-	echo "false";
+	echo("Error description: " . mysqli_error($mysqli));
 	}
 	
 }
@@ -445,10 +557,10 @@ function newReservation($lotid, $uid, $date,$starttime, $endtime){
 	$sql = "INSERT INTO `reservation`(`ReservationID`, `LotID`, `UserID`, `NotifyID`, `Date`, `StartTime`, `EndTime`, `CheckInTime`, `CheckOutTime`, `ReservationStatus`, `ReservationTimestamp`) 
 	VALUES (NULL,'$lotid','$uid',NULL,'$date','$starttime','$endtime', NULL, NULL, 1,CURRENT_TIMESTAMP)";
 	if ($mysqli->query($sql)==true){
-		echo "true";
+		echo "Successfully added: " . mysqli_affected_rows($mysqli);
 	}
 	else{
-	echo "false";
+	echo("Error description: " . mysqli_error($mysqli));
 	}
 }
 /***
@@ -461,10 +573,10 @@ function cancelReservation($id){
 	include 'config.php';
 	$sql = "UPDATE `reservation` SET `ReservationStatus` = 0 WHERE `ReservationID` = '$id'";
 	if ($mysqli->query($sql)==true){
-		echo "true";
+		echo "Successful updates: " . mysqli_affected_rows($mysqli);
 	}
 	else{
-	echo "false";
+	echo("Error description: " . mysqli_error($mysqli));
 	}
 }
 
