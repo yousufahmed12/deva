@@ -27,7 +27,7 @@ function getTable($table){
 *This will add a user to the user table
 *
 *Input is the name, email,username,password,isDisable which is tinybit, status which is tinybit
-*Output will boolean of true or false if succesful or not
+*Output will be the numeber of successful query
 ***/	
 function postUser($name, $email,$username,$password, $isDisable,$status){
 	include 'config.php';
@@ -99,7 +99,7 @@ function putName($id,$newName){
 *This will delete a spefic user from the user table
 *
 *Input is the userid
-*Output will boolean of true or false if succesful or not
+*Output will be the numeber of successful query
 ***/
 function deleteUser($id){
 	include 'config.php';
@@ -245,7 +245,7 @@ function getAvailableWithType($StartTime,$EndTime,$Date,$Type){
 *This will add a lot to the lot table
 *
 *Input is the schedule id, lot name, max capacity ,disabledspot, reservation spots, lot status which is tinybit, reservability status which is tinybit
-*Output will boolean of true or false if succesful or not
+*Output will be the numeber of successful query
 ***/	
 
 function newLot($lotname, $max, $dspots, $rspots, $lstatus, $reservable){
@@ -263,13 +263,13 @@ function newLot($lotname, $max, $dspots, $rspots, $lstatus, $reservable){
 *This will update a lot max capacity , disabledspots , and reservation spots in the lot table
 *
 *Input is the lot id, max capacity ,disabledspot, reservation spots
-*Output will boolean of true or false if succesful or not
+*Output will be the numeber of successful query
 ***/	
 function updateLot($id, $max, $dspots, $rspots){
 	include 'config.php';
 	$sql = "UPDATE `parkinglot` SET `MaxCapacity`='$max',`DisabledSpots`='$dspots',`ReservationSpots`='$rspots' WHERE `LotID`='$id'";
 	if ($mysqli->query($sql)==true){
-		echo "Successful updates: " . mysqli_affected_rows($mysqli);
+		echo "Successful updates: " . mysqli_affected_rows($mysqli)." \n If 0 then it has already been updated or does not exist.";
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
@@ -279,13 +279,13 @@ function updateLot($id, $max, $dspots, $rspots){
 *This will update a lot disabledspots in the lot table
 *
 *Input is the lot id, disabledspot
-*Output will boolean of true or false if succesful or not
+*Output will be the numeber of successful query
 ***/	
 function updateLotDSpots($id, $dspots){
 	include 'config.php';
 	$sql = "UPDATE `parkinglot` SET `DisabledSpots`='$dspots' WHERE `LotID`='$id'";
 	if ($mysqli->query($sql)==true){
-		echo "Successful updates: " . mysqli_affected_rows($mysqli);
+		echo "Successful updates: " . mysqli_affected_rows($mysqli)." \n If 0 then it has already been updated or does not exist.";
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
@@ -295,13 +295,13 @@ function updateLotDSpots($id, $dspots){
 *This will update a lot  reservation spots in the lot table
 *
 *Input is the lot id, reservation spots
-*Output will boolean of true or false if succesful or not
+*Output will be the numeber of successful query
 ***/	
 function updateLotRSpots($id, $rspots){
 	include 'config.php';
 	$sql = "UPDATE `parkinglot` SET `ReservationSpots`='$rspots' WHERE `LotID`='$id'";
 	if ($mysqli->query($sql)==true){
-		echo "Successful updates: " . mysqli_affected_rows($mysqli);
+		echo "Successful updates: " . mysqli_affected_rows($mysqli)." \n If 0 then it has already been updated or does not exist.";
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
@@ -312,7 +312,7 @@ function updateLotRSpots($id, $rspots){
 *
 *Input is the lot id, permit id, startime ,endtime
 *Permit id: 1 Commuter, 2 Resident 3 Employee 
-*Output will boolean of true or false if succesful or not
+*Output will be the numeber of successful query
 ***/	
 
 function newSchedule($lotid, $pid, $starttime, $endtime){
@@ -330,7 +330,7 @@ function newSchedule($lotid, $pid, $starttime, $endtime){
 *This will remove a schedule from the schedule table
 *
 *Input is the schedule id
-*Output will boolean of true or false if succesful or not
+*Output will be the numeber of successful query
 ***/	
 function removeSchedule($id){
 	include 'config.php';
@@ -346,13 +346,13 @@ function removeSchedule($id){
 *This will change the schedule of a lot to a schedule from the schedule table
 *
 *Input is the lot id,schedule id
-*Output will boolean of true or false if succesful or not
+*Output will be the numeber of successful query
 ***/	
 function changeLotSchedule($lotid, $id){
 	include 'config.php';
 	$sql = "UPDATE `schedule` SET `LotID`=$lotid WHERE `ScheduleID` = '$id'";
 	if ($mysqli->query($sql)==true){
-		echo "Successful updates: " . mysqli_affected_rows($mysqli);
+		echo "Successful updates: " . mysqli_affected_rows($mysqli)." \n If 0 then it has already been updated or does not exist.";
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
@@ -362,7 +362,7 @@ function changeLotSchedule($lotid, $id){
 *This will remove a lot from the lot table
 *
 *Input is the lot id
-*Output will boolean of true or false if succesful or not
+*Output will be the numeber of successful query
 ***/	
 function removeLot($id){
 	include 'config.php';
@@ -378,14 +378,18 @@ function removeLot($id){
 *These will change the status of a lot to open or closed
 *
 *Input is the lot id
-*Output will boolean of true or false if succesful or not
+*Output will be the numeber of successful query
 *NEEDS FIXING BOOLEAN
 ***/	
 function closeLot($id){
 	include 'config.php';
 	$sql = "UPDATE parkinglot SET LotStatus = 0 WHERE LotID = $id";
 	if ($mysqli->query($sql)==true){
-		echo "Successful updates: " . mysqli_affected_rows($mysqli);
+		$success =  mysqli_affected_rows($mysqli);
+		echo "Successful updates: " . $success." \n If 0 then it has already been updated or does not exist.";
+		if($success > 0){
+			cancelLotReservation($id);
+		}
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
@@ -395,7 +399,7 @@ function openLot($id){
 	include 'config.php';
 	$sql = "UPDATE parkinglot SET LotStatus = 1 WHERE LotID = $id";
 	if ($mysqli->query($sql)==true){
-		echo "Successful updates: " . mysqli_affected_rows($mysqli);
+		echo "Successful updates: " . mysqli_affected_rows($mysqli)." \n If 0 then it has already been updated or does not exist.";
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
@@ -406,14 +410,14 @@ function openLot($id){
 *These will update the status of a lot to allow a lot to be reservable or not
 *
 *Input is the lot id
-*Output will boolean of true or false if succesful or not
+*Output will be the numeber of successful query
 *NEEDS FIXING BOOLEAN
 ***/	
 function unreserveLot($id){
 	include 'config.php';
 	$sql = "UPDATE parkinglot SET isReservable = 0 WHERE LotID = $id";
 	if ($mysqli->query($sql)==true){
-		echo "Successful updates: " . mysqli_affected_rows($mysqli);
+		echo "Successful updates: " . mysqli_affected_rows($mysqli)." \n If 0 then it has already been updated or does not exist.";
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
@@ -423,7 +427,7 @@ function reserveLot($id){
 	include 'config.php';
 	$sql = "UPDATE parkinglot SET isReservable = 1 WHERE LotID = $id";
 	if ($mysqli->query($sql)==true){
-		echo "Successful updates: " . mysqli_affected_rows($mysqli);
+		echo "Successful updates: " . mysqli_affected_rows($mysqli)." \n If 0 then it has already been updated or does not exist.";
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
@@ -436,14 +440,14 @@ function reserveLot($id){
 *These will update the User status to prevent user from making reservation
 *
 *Input is the user id
-*Output will boolean of true or false if succesful or not
+*Output will be the numeber of successful query
 *NEEDS FIXING BOOLEAN
 ***/	
 function lockUser($id){
 	include 'config.php';
 	$sql = "UPDATE user SET Status = 0 WHERE UserID = '$id'";
 	if ($mysqli->query($sql)==true){
-		echo "Successful updates: " . mysqli_affected_rows($mysqli);
+		echo "Successful updates: " . mysqli_affected_rows($mysqli)." \n If 0 then it has already been updated or does not exist.";
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
@@ -453,7 +457,7 @@ function unlockUser($id){
 	include 'config.php';
 	$sql = "UPDATE user SET Status = 1 WHERE UserID = '$id'";
 	if ($mysqli->query($sql)==true){
-		echo "Successful updates: " . mysqli_affected_rows($mysqli);
+		echo "Successful updates: " . mysqli_affected_rows($mysqli)." \n If 0 then it has already been updated or does not exist.";
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
@@ -512,7 +516,7 @@ function getUserStatus($id){
 *This will add a complaint to the complaints table
 *
 *Input is the user id, report
-*Output will boolean of true or false if succesful or not
+*Output will be the numeber of successful query
 ***/	
 function newComplaint($uid, $report){
 	include 'config.php';
@@ -528,7 +532,7 @@ function newComplaint($uid, $report){
 *This will remove a complaint from the commplaints table
 *
 *Input is the complaint id
-*Output will boolean of true or false if succesful or not
+*Output will be the numeber of successful query
 *
 *NEEDS FIXING BOOLEAN
 ***/	
@@ -550,7 +554,7 @@ function removeComplaint($id){
 *This will add a reservation to the reservation table
 *
 *Input is the lot id, user id, date, startime ,endtime
-*Output will boolean of true or false if succesful or not
+*Output will be the numeber of successful query
 ***/	
 function newReservation($lotid, $uid, $date,$starttime, $endtime){
 	include 'config.php';
@@ -567,17 +571,56 @@ function newReservation($lotid, $uid, $date,$starttime, $endtime){
 *This will cancel a reservation from the reservation table
 *
 *Input is the reservation id
-*Output will boolean of true or false if succesful or not
+*Output will be the numeber of successful query
 ***/
 function cancelReservation($id){
 	include 'config.php';
 	$sql = "UPDATE `reservation` SET `ReservationStatus` = 0 WHERE `ReservationID` = '$id'";
 	if ($mysqli->query($sql)==true){
-		echo "Successful updates: " . mysqli_affected_rows($mysqli);
+		echo "Successful updates: " . mysqli_affected_rows($mysqli)." \n If 0 then it has already been updated or does not exist.";
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
 	}
 }
+/***
+*This will cancel reservations from the reservation table for a lot for all reservations that are the current date 
+*and starttimes that have yet to start
+*
+*Input is the lot id
+*Output will be the numeber of successful query
+***/
+function cancelLotReservation($id){
+	include 'config.php';
+	$sql = "UPDATE `reservation` SET `ReservationStatus` = 0 WHERE `LotID` = $id AND  CURRENT_TIME >= `StartTime` AND `Date` = CURRENT_DATE";
+	if ($mysqli->query($sql)==true){
+		echo "\nCancelled reservations: " . mysqli_affected_rows($mysqli)." \nIf 0 then it has already been updated or does not exist.";
+	}
+	else{
+	echo("Error description: " . mysqli_error($mysqli));
+	}
+}
+/***
+*This will get a user id from the user table with an email
+*
+*Input is user email
+*Output will be the numeber of successful query
+***/
+function getUserIdEmail($userEmail){
 
+	include 'config.php';
+	$sql = "SELECT `UserID` FROM `user` WHERE `Email` = '$userEmail'";
+	$result = $mysqli->query($sql);		
+		
+	if($result->num_rows > 0){	
+		$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+		return $row["UserID"];
+	}
+	else
+	{
+		echo "Check your input email or else it does not exist.";
+	}
+	/* free result set */
+		$result->close();
+}
 ?>

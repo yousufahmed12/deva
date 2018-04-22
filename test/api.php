@@ -18,7 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 			$id = $_GET['id'];
 			echo getUser($id);
 			http_response_code(200);
-		}		
+		}
+		
 	}
 	else if(isset($_GET['get'])){
 		/***
@@ -30,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 		*Output is a json with the user information
 		***/
 		if($_GET['get'] == "userStatus"){
+
 			$id = $_GET['id'];
 			echo getUserStatus($id);
 			http_response_code(200);
@@ -43,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 		*Output is a json with the user information
 		***/
 		if($_GET['get'] == "Email"){
+
 			$id = $_GET['id'];
 			echo getEmail($id);
 			http_response_code(200);
@@ -58,7 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 		*Output is a json of all the data inside the table
 		***/
 		//deny user
-		if($_GET['table']){			
+		if($_GET['table']){
+			
 			$table = $_GET['table'];
 			echo getTable($table);
 			http_response_code(200);
@@ -76,11 +80,13 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 		$starttime = $_GET['starttime'];
 		$endtime = $_GET['endtime'];
 		$type = $_GET['type'];
-				
+		
+		
 		$StartTime = date("H:i:s", substr($starttime, 0, 10));
 		$EndTime = date("H:i:s", substr($endtime, 0, 10));
 		$Date = date("Y-m-d", substr($starttime, 0, 10));
-				
+		
+		
 		echo getAvailableWithType($StartTime,$EndTime,$Date,$type);
 		http_response_code(200);
 	}
@@ -95,10 +101,12 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 		***/
 		$starttime = $_GET['starttime'];
 		$endtime = $_GET['endtime'];
-				
+		
+		
 		$StartTime = date(" H:i:s", substr($starttime, 0, 10));
 		$EndTime = date(" H:i:s", substr($endtime, 0, 10));
 		$Date = date("Y-m-d", substr($starttime, 0, 10));
+		
 		
 		echo getAvailable($StartTime,$EndTime,$Date);
 		http_response_code(200);
@@ -176,6 +184,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			
 			$lotid = $postBody->$lotid;
 			$userid = $postBody->$userid;
+
 			$starttime = $postBody->$starttime;
 			$endtime = $postBody->$endtime;
 
@@ -184,6 +193,30 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$Date = date("Y-m-d", substr($starttime, 0, 10));
 
 			echo newReservation($lotid, $userid, $Date,$StartTime, $EndTime);
+			http_response_code(200);
+		}
+		if($_GET['table'] == "eReservation"){
+			$postBody = file_get_contents("php://input");
+			$postBody = json_decode($postBody);
+			
+			$lotid = "LotID";
+			$email = "Email";
+			$starttime = "StartTime";
+			$endtime = "EndTime";
+			
+			$lotid = $postBody->$lotid;
+			$email = $postBody->$email;
+			
+			$userIdFromEmail = getUserIdEmail($email);
+			
+			$starttime = $postBody->$starttime;
+			$endtime = $postBody->$endtime;
+
+			$StartTime = date(" H:i:s", substr($starttime, 0, 10));
+			$EndTime = date(" H:i:s", substr($endtime, 0, 10));
+			$Date = date("Y-m-d", substr($starttime, 0, 10));
+
+			echo newReservation($lotid, $userIdFromEmail, $Date,$StartTime, $EndTime);
 			http_response_code(200);
 		}
 		/***
@@ -262,7 +295,8 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 			$newName = $_GET['newName'];
 			echo putName($id,$newName);
 			http_response_code(200);
-		}	
+		}
+		
 	}
 	else if(isset($_GET['function'])&& isset($_GET['id']) && isset($_GET['max']) && isset($_GET['dspots']) && isset($_GET['rspots'])) {
 		/***
@@ -306,7 +340,8 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 	
 			echo updateLotRSpots($id,$amount);
 			http_response_code(200);
-		}		
+		}
+		
 	}
 	else if(isset($_GET['function']) && isset($_GET['id']) && isset($_GET['lotid'])){
 		/***
@@ -322,7 +357,8 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 			$id = $_GET['id'];
 			echo changeLotSchedule($lotid, $id);
 			http_response_code(200);
-		}		
+		}
+		
 	}
 	else if(isset($_GET['function'])&& isset($_GET['id'])){
 		/***
@@ -416,7 +452,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 			echo cancelReservation($id);
 			http_response_code(200);
 		}
-	}	
+	}
 }
 else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
 	if(isset($_GET['remove']) && isset($_GET['id'])){
@@ -473,7 +509,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
 			
 			$id = $_GET['id'];
 			echo removeSchedule($id);
-			http_response_code(200);	
+			http_response_code(200);
 		}
 		
 	}
