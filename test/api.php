@@ -50,6 +50,36 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 			echo getEmail($id);
 			http_response_code(200);
 		}
+			/***
+		*This will get the user's reservations
+		*
+		*The url will be (get = userReservation & email = 'email input')
+		*
+		*Input is the user email
+		*Output is a json with the user reservations
+		***/
+		if($_GET['get'] == "userReservation"){
+
+			$email = $_GET['email'];
+			$id = getUserIdEmail($email);
+
+			echo getUserReservations($id);
+			http_response_code(200);
+		}
+		/***
+		*This will get the user's info
+		*
+		*The url will be (get = userInfo & email = 'email input')
+		*
+		*Input is the user email
+		*Output is a json with the user information
+		***/
+		if($_GET['get'] == "userInfo"){
+
+			$email = $_GET['email'];
+			echo getUserInfo($email);
+			http_response_code(200);
+		}
 	}
 	else if(isset($_GET['table'])){
 		/***
@@ -60,12 +90,20 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 		*Input is the name of the table
 		*Output is a json of all the data inside the table
 		***/
-		//deny user
+		
 		if($_GET['table']){
 			
 			$table = $_GET['table'];
-			echo getTable($table);
-			http_response_code(200);
+			if($table != "user"){
+				echo getTable($table);
+				http_response_code(200);
+			}
+			else
+			{
+				echo "Table: ".$table. " not allowed for access.";
+				http_response_code(200);
+			}
+			
 		}
 	}
 	else if(isset($_GET['starttime']) && isset($_GET['endtime']) && isset($_GET['type'])){
@@ -145,6 +183,39 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			http_response_code(200);
 		}
 		/***
+		*This will get the add a new user with permitID and usertypeid to the database
+		*
+		*The url will be (table = userWithpermit)
+		*
+		*Input will be a post body with the user info
+		*Output will be a boolean of true or false
+		***/
+		if($_GET['table'] == "userWithpermit"){
+			$postBody = file_get_contents("php://input");
+			$postBody = json_decode($postBody);
+			
+			$permit = "permit";
+			$type = "type";
+			$name = "name";
+			$email = "email";
+			$username = "username";
+			$password = "password";
+			$isDisable = "isDisable";
+			$status = "status";
+			
+			$permit = $postBody->$permit;
+			$type = $postBody->$type;
+			$name = $postBody->$name;
+			$email = $postBody->$email;
+			$username = $postBody->$username;
+			$password = $postBody->$password;
+			$isDisable = $postBody->$isDisable;
+			$status = $postBody->$status;
+			
+			echo postUserWithPermit($permit,$type,$name, $email, $username, $password, $isDisable, $status);
+			http_response_code(200);
+		}
+		/***
 		*This will get the add a new complaint to the database
 		*
 		*The url will be (table = complaints)
@@ -195,7 +266,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			echo newReservation($lotid, $userid, $Date,$StartTime, $EndTime);
 			http_response_code(200);
 		}
-		if($_GET['table'] == "eReservation"){
+		if($_GET['table'] == "reserveWithEmail"){
 			$postBody = file_get_contents("php://input");
 			$postBody = json_decode($postBody);
 			
@@ -219,6 +290,54 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			echo newReservation($lotid, $userIdFromEmail, $Date,$StartTime, $EndTime);
 			http_response_code(200);
 		}
+		//4/25/18 Reserve a parking space through Google Token
+		if($_GET['table'] == "reserveWithToken"){
+			$postBody = file_get_contents("php://input");
+			$postBody = json_decode($postBody);
+			
+			$lotid = "LotID";
+			$starttime = "StartTime";
+			$endtime = "EndTime";
+			/*Kevin 4/25/18 - Added reference to get token and initialize userid*/
+			$token = "token";
+			$userid = 0;
+
+			$lotid = $postBody->$lotid;
+
+			/*Kevin 4/25/18
+			  - Check if token set get userid from getting email from token using a select statement
+				where email is equal to the email received from token
+			  - Check if userid is set use userid
+			  -If neither is set userid to null		
+			 */
+
+			if($postBody->$token){
+				$token = $postBody->$token;
+				$userIdFromToken = getUserFromToken($token);
+				if($userIdFromToken != null){
+					//UserID returned from getUserFromToken Method
+					$userid = $userIdFromToken;
+				}
+				else{
+					$userid = null;
+				}
+			}
+			else{
+				$userid = null;
+			}
+
+			$starttime = $postBody->$starttime;
+			$endtime = $postBody->$endtime;
+
+			$StartTime = date(" H:i:s", substr($starttime, 0, 10));
+			$EndTime = date(" H:i:s", substr($endtime, 0, 10));
+			$Date = date("Y-m-d", substr($starttime, 0, 10));
+
+			echo newReservation($lotid, $userid, $Date,$StartTime, $EndTime);
+			http_response_code(200);
+		}
+
+
 		/***
 		*This will get the add a new lot to the database
 		*
@@ -275,6 +394,29 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$EndTime = date(" H:i:s", substr($endtime, 0, 10));
 
 			echo newSchedule($lotid, $pid, $StartTime, $EndTime);
+			http_response_code(200);
+		}
+		/***
+		*This will add a new notification to the notification table
+		*
+		*The url will be (table = notification)
+		*
+		*Input will be a post body with the notification info
+		*Output will be a success or failure
+		***/
+		if($_GET['table'] == "notification"){
+			$postBody = file_get_contents("php://input");
+			$postBody = json_decode($postBody);
+			
+			$id = "id";
+			$message = "message";
+			$type = "type";
+			
+			$id = $postBody->$id;
+			$message = $postBody->$message;
+			$type = $postBody->$type;
+
+			echo newNotification($id, $message, $type);
 			http_response_code(200);
 		}
 	} 
@@ -358,6 +500,24 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 			echo changeLotSchedule($lotid, $id);
 			http_response_code(200);
 		}
+		
+	}
+	else if(isset($_GET['id']) && isset($_GET['isReservable']) && isset($_GET['ReservationSpots'])){
+		/***
+		*his will update parkinglot with new isReservable or ReservationSpots
+		*
+		*The url will be (id = lotid & isReservable = 'boolean of 0 or 1' & ReservationSpots = 'the new lot number')
+		*
+		*Input LotID, isReservable, ReservationSpots
+		*Output will be a boolean of true or false
+		***/
+		
+			$id = $_GET['id'];
+			$isReservable = $_GET['isReservable'];
+			$ReservationSpots = $_GET['ReservationSpots'];
+			echo updateParkinglot($id, $isReservable, $ReservationSpots);
+			http_response_code(200);
+		
 		
 	}
 	else if(isset($_GET['function'])&& isset($_GET['id'])){

@@ -601,6 +601,30 @@ function cancelLotReservation($id){
 	}
 }
 /***
+*This will get the all reservation for a specific user 
+*
+*Input is the userid
+*Output will be the table data in json format
+***/	
+function getUserReservations($id){
+	include 'config.php';
+	$table3 = "users";
+	$sql = "SELECT * FROM `reservation` WHERE `UserID` = $id";
+	$result = $mysqli->query($sql);
+		
+	if($result->num_rows > 0){	
+		$result_array = array();
+		while($row = $result->fetch_assoc()){
+			$result_array[] = $row;
+		}
+		echo json_encode($result_array);
+	}
+	else
+	{
+		echo "Check your input or else it does not exist.";
+	}
+}	
+/***
 *This will get a user id from the user table with an email
 *
 *Input is user email
@@ -623,4 +647,144 @@ function getUserIdEmail($userEmail){
 	/* free result set */
 		$result->close();
 }
+
+/*
+	Kevin - 4/25/18
+	Attempt to get userid from a token
+*/
+
+function getUserFromToken($userToken){
+	//Kevin - 4/25/18 Include the MySQL Config
+	include 'config.php';
+	/*4/25/18 Kevin - Added reference to gplus-config.php and the autoload file from Google*/
+	include ('gplus/vendor/autoload.php');
+	include ('gplus/gplus-config.php');
+
+	/*Kevin - 4/25/18 Access Token and get payload*/
+	try {
+		$accessToken = $g_client->fetchAccessTokenWithAuthCode($userToken);
+		$g_client->setAccessToken($accessToken);
+	}catch (Exception $e){
+		echo "Error on Access Token: $e";
+		return null; 
+	}
+
+	try {
+		$pay_load = $g_client->verifyIdToken();
+	}catch (Exception $e) {
+		echo "Error on Verify Token: $e";
+		return null;
+	}
+
+	/*Kevin - 4/25/18 Get User Email From Payload and Select the UserID from the user*/
+	if(isset($pay_load)){
+		$userEmail = $pay_load["email"];
+		$sql = "SELECT * FROM user WHERE Email = '$userEmail'";
+		$result = $mysqli->query($sql);
+		$rowcount=mysqli_num_rows($result);
+		if ($rowcount == 1) {
+			$userID = 0;
+			while ($row = $result->fetch_object()){
+				$userID = $row->UserID;
+			}
+			return $userID;
+		} 
+		else if($rowcount == 0) {
+			return null;
+		} 
+		else {
+			return null;
+		}
+		/* free result set */
+		$result->close();
+		
+	}
+	else{
+		echo "Error payload not set";
+		return null;
+	}	
+
+	
+}
+
+/***
+*This will get the user info
+*
+*Input email
+*Output will be user info in json format
+***/
+function getUserInfo($userEmail){
+
+	include 'config.php';
+	$sql = "SELECT UserID, Name, Token FROM user WHERE Email = '$userEmail'";
+	$result = $mysqli->query($sql);		
+	if($result->num_rows > 0){	
+		$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+		echo json_encode($row);
+	}
+	else
+	{
+		echo "Check your input email or else it does not exist.";
+	}
+	/* free result set */
+		$result->close();
+}
+
+/***
+*This will add a new user to the user table for the faculty team
+*
+*Input PermitID, UserTypeID, Name, Email, Username, Token, isDisabled, Status
+*Output will be success or not
+***/
+function postUserWithPermit($permit, $type, $name, $email,$username,$password, $isDisable,$status){
+	include 'config.php';
+	$sql = "INSERT INTO `user` (`UserID`, `PermitID`, `UserTypeID`, `Name`, `Email`, `Username`, `Token`, `isDisabled`, `Status`) VALUES
+	(NULL, '$permit', '$type', '$name', '$email', '$username', '$password', '$isDisable', '$status')";
+	if ($mysqli->query($sql)==true){
+		echo "Successfully added: " . mysqli_affected_rows($mysqli);
+	}
+	else{
+	echo("Error description: " . mysqli_error($mysqli));
+	}
+}
+
+/***
+*This will add a new notification to the notification table
+*
+*Input UserID, Timestamp, Message, NotificationTypeID
+*Output will be success or not
+***/	
+function newNotification($UserID, $Message, $NotificationTypeID){
+	include 'config.php';
+	$sql = "INSERT INTO `notification` (`NotifyID`, `UserID`, `Timestamp`, `Message`, `NotificationTypeID`) VALUES 
+	(NULL, '$UserID', CURRENT_TIMESTAMP, '$Message', '$NotificationTypeID')";
+	if ($mysqli->query($sql)==true){
+		echo "Successfully added: " . mysqli_affected_rows($mysqli);
+	}
+	else{
+	echo("Error description: " . mysqli_error($mysqli));
+	}
+}
+
+/***
+*This will update parkinglot with new isReservable or ReservationSpots
+*
+*Input LotID, isReservable, ReservationSpots
+*Output will be success or not
+***/	
+function updateParkinglot($LotID, $isReservable, $ReservationSpots){
+	include 'config.php';
+	$sql = "UPDATE `parkinglot` SET `isReservable` = '$isReservable' WHERE `parkinglot`.`LotID` = '$LotID'";
+	$sql2 = "UPDATE `parkinglot` SET `ReservationSpots` = '$ReservationSpots' WHERE `parkinglot`.`LotID` = '$LotID'";
+	$mysqli->query($sql);
+	if ($mysqli->query($sql2)==true){
+		echo "Successfully updated ";
+	}
+	else{
+	echo("Error description: " . mysqli_error($mysqli));
+	}
+}
+
+
+
 ?>
