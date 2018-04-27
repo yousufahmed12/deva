@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 			else
 			{
 				echo "Table: ".$table. " not allowed for access.";
-				 
+				 http_response_code(403);
 			}
 			
 		}
