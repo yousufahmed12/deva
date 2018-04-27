@@ -20,7 +20,8 @@ function getTable($table){
 	}
 	else
 	{
-		echo "Check your input or else it does not exist.";
+		 echo "Check your input or else it does not exist.";
+		 		http_response_code(400);
 	}
 }	
 /***
@@ -37,7 +38,9 @@ function postUser($name, $email,$username,$password, $isDisable,$status){
 		echo "Successfully added: " . mysqli_affected_rows($mysqli);
 	}
 	else{
+		
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 
@@ -62,6 +65,7 @@ function getUser($id){
 	else
 	{
 		echo "Check your input or else it does not exist.";
+		http_response_code(400);
 	}
 }
 		
@@ -87,7 +91,8 @@ function putName($id,$newName){
 		}
 		else
 		{
-			echo "Check your input or else it does not exist.";
+			   echo "Check your input or else it does not exist.";
+			   http_response_code(400);
 		}
 	}
 	else{
@@ -109,6 +114,7 @@ function deleteUser($id){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 
@@ -160,7 +166,8 @@ function getAvailable($StartTime,$EndTime,$Date){
 	}
 	else
 	{
-		echo "Check your input or else it does not exist.";
+		  echo "Check your input or else it does not exist.";
+		  http_response_code(400);
 	}
 }
 
@@ -235,7 +242,8 @@ function getAvailableWithType($StartTime,$EndTime,$Date,$Type){
 	}
 	else
 	{
-		echo "Check your input or else it does not exist.";
+		  echo "Check your input or else it does not exist.";
+		  http_response_code(400);
 	}
 }
 
@@ -257,6 +265,7 @@ function newLot($lotname, $max, $dspots, $rspots, $lstatus, $reservable){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 /***
@@ -273,6 +282,7 @@ function updateLot($id, $max, $dspots, $rspots){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 /***
@@ -289,6 +299,7 @@ function updateLotDSpots($id, $dspots){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 /***
@@ -305,6 +316,7 @@ function updateLotRSpots($id, $rspots){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 /***
@@ -324,6 +336,7 @@ function newSchedule($lotid, $pid, $starttime, $endtime){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 /***
@@ -340,6 +353,7 @@ function removeSchedule($id){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 /***
@@ -356,6 +370,7 @@ function changeLotSchedule($lotid, $id){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 /***
@@ -372,6 +387,7 @@ function removeLot($id){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 /***
@@ -393,6 +409,7 @@ function closeLot($id){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 function openLot($id){
@@ -403,6 +420,7 @@ function openLot($id){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 
@@ -421,6 +439,7 @@ function unreserveLot($id){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 function reserveLot($id){
@@ -431,6 +450,7 @@ function reserveLot($id){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 
@@ -451,6 +471,7 @@ function lockUser($id){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 function unlockUser($id){
@@ -461,6 +482,7 @@ function unlockUser($id){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 /***
@@ -483,7 +505,8 @@ function getEmail($id){
 	}
 	else
 	{
-		echo "Check your input or else it does not exist.";
+		  echo "Check your input or else it does not exist.";
+		  		http_response_code(400);
 	}
 }
 /*This will get a specific user status from the user table
@@ -505,7 +528,8 @@ function getUserStatus($id){
 	}
 	else
 	{
-		echo "Check your input or else it does not exist.";
+		 echo "Check your input or else it does not exist.";
+		 		http_response_code(400);
 	}
 }
 
@@ -526,6 +550,7 @@ function newComplaint($uid, $report){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 /***
@@ -544,6 +569,7 @@ function removeComplaint($id){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 	
 }
@@ -565,6 +591,7 @@ function newReservation($lotid, $uid, $date,$starttime, $endtime){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 /***
@@ -581,6 +608,7 @@ function cancelReservation($id){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 /***
@@ -598,6 +626,7 @@ function cancelLotReservation($id){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 /***
@@ -621,7 +650,8 @@ function getUserReservations($id){
 	}
 	else
 	{
-		echo "Check your input or else it does not exist.";
+		 echo "Check your input or else it does not exist.";
+		 		http_response_code(400);
 	}
 }	
 /***
@@ -643,6 +673,7 @@ function getUserIdEmail($userEmail){
 	else
 	{
 		echo "Check your input email or else it does not exist.";
+		http_response_code(400);
 	}
 	/* free result set */
 		$result->close();
@@ -745,6 +776,7 @@ function postUserWithPermit($permit, $type, $name, $email,$username,$password, $
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 
@@ -763,6 +795,7 @@ function newNotification($UserID, $Message, $NotificationTypeID){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 
@@ -782,6 +815,7 @@ function updateParkinglot($LotID, $isReservable, $ReservationSpots){
 	}
 	else{
 	echo("Error description: " . mysqli_error($mysqli));
+	http_response_code(400);
 	}
 }
 

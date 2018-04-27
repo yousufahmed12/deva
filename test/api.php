@@ -17,7 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 			$table = $_GET['table'];
 			$id = $_GET['id'];
 			echo getUser($id);
-			http_response_code(200);
+			// 
+		}
+		else{
+			http_response_code(400);
 		}
 		
 	}
@@ -34,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 
 			$id = $_GET['id'];
 			echo getUserStatus($id);
-			http_response_code(200);
+			 
 		}
 		/***
 		*This will get the user email info
@@ -44,11 +47,11 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 		*Input is the user id
 		*Output is a json with the user information
 		***/
-		if($_GET['get'] == "Email"){
+		else if($_GET['get'] == "Email"){
 
 			$id = $_GET['id'];
 			echo getEmail($id);
-			http_response_code(200);
+			 
 		}
 			/***
 		*This will get the user's reservations
@@ -58,13 +61,13 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 		*Input is the user email
 		*Output is a json with the user reservations
 		***/
-		if($_GET['get'] == "userReservation"){
+		else if($_GET['get'] == "userReservation"){
 
 			$email = $_GET['email'];
 			$id = getUserIdEmail($email);
 
 			echo getUserReservations($id);
-			http_response_code(200);
+			 
 		}
 		/***
 		*This will get the user's info
@@ -74,11 +77,14 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 		*Input is the user email
 		*Output is a json with the user information
 		***/
-		if($_GET['get'] == "userInfo"){
+		else if($_GET['get'] == "userInfo"){
 
 			$email = $_GET['email'];
 			echo getUserInfo($email);
-			http_response_code(200);
+			 
+		}
+		else{
+			http_response_code(400);
 		}
 	}
 	else if(isset($_GET['table'])){
@@ -96,12 +102,12 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 			$table = $_GET['table'];
 			if($table != "user"){
 				echo getTable($table);
-				http_response_code(200);
+				 
 			}
 			else
 			{
 				echo "Table: ".$table. " not allowed for access.";
-				http_response_code(200);
+				 
 			}
 			
 		}
@@ -126,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 		
 		
 		echo getAvailableWithType($StartTime,$EndTime,$Date,$type);
-		http_response_code(200);
+		 
 	}
 	else if(isset($_GET['starttime']) && isset($_GET['endtime'])){
 		/***
@@ -147,7 +153,10 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 		
 		
 		echo getAvailable($StartTime,$EndTime,$Date);
-		http_response_code(200);
+		 
+	}
+	else{
+		http_response_code(400);
 	}
 			
 }
@@ -180,7 +189,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$status = $postBody->$status;
 			
 			echo postUser($name, $email, $username, $password, $isDisable, $status);
-			http_response_code(200);
+			 
 		}
 		/***
 		*This will get the add a new user with permitID and usertypeid to the database
@@ -190,7 +199,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 		*Input will be a post body with the user info
 		*Output will be a boolean of true or false
 		***/
-		if($_GET['table'] == "userWithpermit"){
+		else if($_GET['table'] == "userWithpermit"){
 			$postBody = file_get_contents("php://input");
 			$postBody = json_decode($postBody);
 			
@@ -213,7 +222,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$status = $postBody->$status;
 			
 			echo postUserWithPermit($permit,$type,$name, $email, $username, $password, $isDisable, $status);
-			http_response_code(200);
+			 
 		}
 		/***
 		*This will get the add a new complaint to the database
@@ -223,7 +232,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 		*Input will be a post body with the complaint info
 		*Output will be a boolean of true or false
 		***/
-		if($_GET['table'] == "complaints"){
+		else if($_GET['table'] == "complaints"){
 			$postBody = file_get_contents("php://input");
 			$postBody = json_decode($postBody);
 			
@@ -234,7 +243,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$report = $postBody->$report;
 			
 			echo newComplaint($id, $report);
-			http_response_code(200);
+			 
 		}
 		/***
 		*This will get the add a new reservation to the database
@@ -244,7 +253,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 		*Input will be a post body with the reservation info
 		*Output will be a boolean of true or false
 		***/
-		if($_GET['table'] == "reservation"){
+		else if($_GET['table'] == "reservation"){
 			$postBody = file_get_contents("php://input");
 			$postBody = json_decode($postBody);
 			
@@ -264,9 +273,9 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$Date = date("Y-m-d", substr($starttime, 0, 10));
 
 			echo newReservation($lotid, $userid, $Date,$StartTime, $EndTime);
-			http_response_code(200);
+			 
 		}
-		if($_GET['table'] == "reserveWithEmail"){
+		else if($_GET['table'] == "reserveWithEmail"){
 			$postBody = file_get_contents("php://input");
 			$postBody = json_decode($postBody);
 			
@@ -288,10 +297,10 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$Date = date("Y-m-d", substr($starttime, 0, 10));
 
 			echo newReservation($lotid, $userIdFromEmail, $Date,$StartTime, $EndTime);
-			http_response_code(200);
+			 
 		}
 		//4/25/18 Reserve a parking space through Google Token
-		if($_GET['table'] == "reserveWithToken"){
+		else if($_GET['table'] == "reserveWithToken"){
 			$postBody = file_get_contents("php://input");
 			$postBody = json_decode($postBody);
 			
@@ -334,10 +343,8 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$Date = date("Y-m-d", substr($starttime, 0, 10));
 
 			echo newReservation($lotid, $userid, $Date,$StartTime, $EndTime);
-			http_response_code(200);
+			 
 		}
-
-
 		/***
 		*This will get the add a new lot to the database
 		*
@@ -346,7 +353,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 		*Input will be a post body with the lot info
 		*Output will be a boolean of true or false
 		***/
-		if($_GET['table'] == "parkinglot"){
+		else if($_GET['table'] == "parkinglot"){
 			$postBody = file_get_contents("php://input");
 			$postBody = json_decode($postBody);
 			
@@ -365,7 +372,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$reservable = $postBody->$reservable;
 
 			echo newLot($lotname, $max, $dspots, $rspots, $lstatus, $reservable);
-			http_response_code(200);
+			 
 		}
 		/***
 		*This will get the add a new schedule to the database
@@ -376,7 +383,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 		*Permit id: 1 Commuter, 2 Resident 3 Employee 
 		*Output will be a boolean of true or false
 		***/
-		if($_GET['table'] == "schedule"){
+		else if($_GET['table'] == "schedule"){
 			$postBody = file_get_contents("php://input");
 			$postBody = json_decode($postBody);
 			
@@ -394,7 +401,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$EndTime = date(" H:i:s", substr($endtime, 0, 10));
 
 			echo newSchedule($lotid, $pid, $StartTime, $EndTime);
-			http_response_code(200);
+			 
 		}
 		/***
 		*This will add a new notification to the notification table
@@ -404,7 +411,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 		*Input will be a post body with the notification info
 		*Output will be a success or failure
 		***/
-		if($_GET['table'] == "notification"){
+		else if($_GET['table'] == "notification"){
 			$postBody = file_get_contents("php://input");
 			$postBody = json_decode($postBody);
 			
@@ -417,9 +424,15 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$type = $postBody->$type;
 
 			echo newNotification($id, $message, $type);
-			http_response_code(200);
+			 
 		}
-	} 
+		else{
+			http_response_code(400);
+		}
+	}
+	else{
+			http_response_code(400);
+		}
 }
 else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 	if(isset($_GET['table']) && isset($_GET['id']) && isset($_GET['newName'])){
@@ -436,7 +449,10 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 			$id = $_GET['id'];
 			$newName = $_GET['newName'];
 			echo putName($id,$newName);
-			http_response_code(200);
+			 
+		}
+		else{
+			http_response_code(400);
 		}
 		
 	}
@@ -456,7 +472,10 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 			$rspots = $_GET['rspots'];
 	
 			echo updateLot($id, $max, $dspots, $rspots);
-			http_response_code(200);
+			 
+		}
+		else{
+			http_response_code(400);
 		}
 	}
 	else if(isset($_GET['function']) && isset($_GET['id']) && isset($_GET['amount'])){
@@ -474,14 +493,17 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 			$amount = $_GET['amount'];
 	
 			echo updateLotDSpots($id, $amount);
-			http_response_code(200);
+			 
 		}
 		else if($_GET['function'] == "updateLotRSpots"){
 			$id = $_GET['id'];
 			$amount = $_GET['amount'];
 	
 			echo updateLotRSpots($id,$amount);
-			http_response_code(200);
+			 
+		}
+		else{
+			http_response_code(400);
 		}
 		
 	}
@@ -498,7 +520,10 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 			$lotid = $_GET['lotid'];
 			$id = $_GET['id'];
 			echo changeLotSchedule($lotid, $id);
-			http_response_code(200);
+			 
+		}
+		else{
+			http_response_code(400);
 		}
 		
 	}
@@ -516,7 +541,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 			$isReservable = $_GET['isReservable'];
 			$ReservationSpots = $_GET['ReservationSpots'];
 			echo updateParkinglot($id, $isReservable, $ReservationSpots);
-			http_response_code(200);
+			 
 		
 		
 	}
@@ -532,7 +557,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		if($_GET['function'] == "unlockUser"){
 			$id = $_GET['id'];
 			echo unlockUser($id);
-			http_response_code(200);
+			 
 		}
 		/***
 		*This will update the user status to be 0 or in boolean false
@@ -545,7 +570,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		else if($_GET['function'] == "lockUser"){
 			$id = $_GET['id'];
 			echo lockUser($id);
-			http_response_code(200);
+			 
 		}
 		/***
 		*This will update the parkinglot isReservable to be 1 or in boolean true
@@ -558,7 +583,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		else if($_GET['function'] == "reserveLot"){
 			$id = $_GET['id'];
 			echo reserveLot($id);
-			http_response_code(200);
+			 
 		}
 		/***
 		*This will update the parkinglot isReservable to be 0 or in boolean false
@@ -571,7 +596,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		else if($_GET['function'] == "unreserveLot"){
 			$id = $_GET['id'];
 			echo unreserveLot($id);
-			http_response_code(200);
+			 
 		}
 		/***
 		*This will update the parkinglot LotStatus to be 1 or in boolean true
@@ -584,7 +609,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		else if($_GET['function'] == "openLot"){
 			$id = $_GET['id'];
 			echo openLot($id);
-			http_response_code(200);
+			 
 		}
 		/***
 		*This will update the parkinglot LotStatus to be 0 or in boolean false
@@ -597,7 +622,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		else if($_GET['function'] == "closeLot"){
 			$id = $_GET['id'];
 			echo closeLot($id);
-			http_response_code(200);
+			 
 		}
 		/***
 		*This will update the ReservationStatus to be 0 or in boolean false
@@ -610,9 +635,15 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		else if($_GET['function'] == "cancelReservation"){
 			$id = $_GET['id'];
 			echo cancelReservation($id);
-			http_response_code(200);
+			 
+		}
+		else{
+			http_response_code(400);
 		}
 	}
+	else{
+			http_response_code(400);
+		}
 }
 else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
 	if(isset($_GET['remove']) && isset($_GET['id'])){
@@ -627,7 +658,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
 		if($_GET['remove'] == "user"){
 			$id = $_GET['id'];
 			echo deleteUser($id);
-			http_response_code(200);
+			 
 		}
 		/***
 		*This will get the delete a complaint in the database
@@ -637,11 +668,11 @@ else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
 		*Input will the complaints id
 		*Output will be a boolean of true or false
 		***/
-		if($_GET['remove'] == "complaints"){
+		else if($_GET['remove'] == "complaints"){
 			
 			$id = $_GET['id'];
 			echo removeComplaint($id);
-			http_response_code(200);		
+			 		
 		} 
 		/***
 		*This will get the delete a lot in the database
@@ -651,11 +682,11 @@ else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
 		*Input will the lot id
 		*Output will be a boolean of true or false
 		***/
-		if($_GET['remove'] == "parkinglot"){
+		else if($_GET['remove'] == "parkinglot"){
 			
 			$id = $_GET['id'];
 			echo removeLot($id);
-			http_response_code(200);
+			 
 		}
 		/***
 		*This will get the delete a schedule in the database
@@ -665,13 +696,19 @@ else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
 		*Input will the schedule id
 		*Output will be a boolean of true or false
 		***/
-		if($_GET['remove'] == "schedule"){
+		else if($_GET['remove'] == "schedule"){
 			
 			$id = $_GET['id'];
 			echo removeSchedule($id);
-			http_response_code(200);
+			 
+		}
+		else{
+			http_response_code(400);
 		}
 		
+	}
+	else{
+			http_response_code(400);
 	}
 }
 else if($_SERVER['REQUEST_METHOD'] == "OPTIONS") {
@@ -683,4 +720,5 @@ else if($_SERVER['REQUEST_METHOD'] == "OPTIONS") {
 else {
          http_response_code(405);
 }
+
 ?>
