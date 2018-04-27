@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 			// 
 		}
 		else{
-			http_response_code(400);
+			http_response_code(404);
 		}
 		
 	}
@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 			 
 		}
 		else{
-			http_response_code(400);
+			http_response_code(404);
 		}
 	}
 	else if(isset($_GET['table'])){
@@ -156,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 		 
 	}
 	else{
-		http_response_code(400);
+		http_response_code(404);
 	}
 			
 }
@@ -427,11 +427,11 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			 
 		}
 		else{
-			http_response_code(400);
+			http_response_code(404);
 		}
 	}
 	else{
-			http_response_code(400);
+			http_response_code(404);
 		}
 }
 else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
@@ -452,7 +452,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 			 
 		}
 		else{
-			http_response_code(400);
+			http_response_code(404);
 		}
 		
 	}
@@ -475,7 +475,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 			 
 		}
 		else{
-			http_response_code(400);
+			http_response_code(404);
 		}
 	}
 	else if(isset($_GET['function']) && isset($_GET['id']) && isset($_GET['amount'])){
@@ -503,7 +503,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 			 
 		}
 		else{
-			http_response_code(400);
+			http_response_code(404);
 		}
 		
 	}
@@ -523,7 +523,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 			 
 		}
 		else{
-			http_response_code(400);
+			http_response_code(404);
 		}
 		
 	}
@@ -638,11 +638,11 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 			 
 		}
 		else{
-			http_response_code(400);
+			http_response_code(404);
 		}
 	}
 	else{
-			http_response_code(400);
+			http_response_code(404);
 		}
 }
 else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
@@ -703,12 +703,12 @@ else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
 			 
 		}
 		else{
-			http_response_code(400);
+			http_response_code(404);
 		}
 		
 	}
 	else{
-			http_response_code(400);
+			http_response_code(404);
 	}
 }
 else if($_SERVER['REQUEST_METHOD'] == "OPTIONS") {

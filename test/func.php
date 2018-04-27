@@ -756,6 +756,7 @@ function getUserInfo($userEmail){
 	else
 	{
 		echo "Check your input email or else it does not exist.";
+		http_response_code(400);
 	}
 	/* free result set */
 		$result->close();
