@@ -181,6 +181,9 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$isDisable = "isDisable";
 			$status = "status";
 			
+			if(array_key_exists("name", $postBody) && array_key_exists("email", $postBody) && array_key_exists("username", $postBody) 
+			&& array_key_exists("password", $postBody) && array_key_exists("isDisable", $postBody) && array_key_exists("status", $postBody)){
+				
 			$name = $postBody->$name;
 			$email = $postBody->$email;
 			$username = $postBody->$username;
@@ -189,7 +192,11 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$status = $postBody->$status;
 			
 			echo postUser($name, $email, $username, $password, $isDisable, $status);
-			 
+			}
+			else{
+                echo "Check you json format";
+                http_response_code(400);
+            }
 		}
 		/***
 		*This will get the add a new user with permitID and usertypeid to the database
@@ -212,6 +219,11 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$isDisable = "isDisable";
 			$status = "status";
 			
+			
+			if(array_key_exists("permit", $postBody) && array_key_exists("type", $postBody) && array_key_exists("name", $postBody) &&
+			array_key_exists("email", $postBody) && array_key_exists("username", $postBody) && array_key_exists("password", $postBody) 
+			&& array_key_exists("isDisable", $postBody) && array_key_exists("status", $postBody)){
+			
 			$permit = $postBody->$permit;
 			$type = $postBody->$type;
 			$name = $postBody->$name;
@@ -222,6 +234,13 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$status = $postBody->$status;
 			
 			echo postUserWithPermit($permit,$type,$name, $email, $username, $password, $isDisable, $status);
+
+			
+			}
+			else{
+                echo "Check you json format";
+                http_response_code(400);
+            }
 			 
 		}
 		/***
@@ -239,10 +258,18 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$id = "id";
 			$report = "report";
 			
+			if(array_key_exists("report", $postBody) && array_key_exists("id", $postBody)) {
+							
 			$id = $postBody->$id;
 			$report = $postBody->$report;
 			
 			echo newComplaint($id, $report);
+				
+				}
+			else{
+                echo "Check you json format";
+                http_response_code(400);
+            }
 			 
 		}
 		/***
@@ -271,9 +298,16 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$StartTime = date(" H:i:s", substr($starttime, 0, 10));
 			$EndTime = date(" H:i:s", substr($endtime, 0, 10));
 			$Date = date("Y-m-d", substr($starttime, 0, 10));
-
+			
+			if(array_key_exists("LotID", $postBody) && array_key_exists("UserID", $postBody)
+				&& array_key_exists("StartTime", $postBody)&& array_key_exists("EndTime", $postBody)) {
+					
 			echo newReservation($lotid, $userid, $Date,$StartTime, $EndTime);
-			 
+			}
+			else{
+                echo "Check your json format";
+				http_response_code(400);
+            }
 		}
 		else if($_GET['table'] == "reserveWithEmail"){
 			$postBody = file_get_contents("php://input");
@@ -283,7 +317,9 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$email = "Email";
 			$starttime = "StartTime";
 			$endtime = "EndTime";
-			
+			if(array_key_exists("LotID", $postBody) && array_key_exists("Email", $postBody)
+				&& array_key_exists("StartTime", $postBody)&& array_key_exists("EndTime", $postBody)) {
+					
 			$lotid = $postBody->$lotid;
 			$email = $postBody->$email;
 			
@@ -297,7 +333,11 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$Date = date("Y-m-d", substr($starttime, 0, 10));
 
 			echo newReservation($lotid, $userIdFromEmail, $Date,$StartTime, $EndTime);
-			 
+			}
+			else{
+                echo "Check your json format";
+				http_response_code(400);
+            }
 		}
 		//4/25/18 Reserve a parking space through Google Token
 		else if($_GET['table'] == "reserveWithToken"){
@@ -364,6 +404,10 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$lstatus = "LotStatus";
 			$reservable = "isReservable";
 			
+			if(array_key_exists("LotName", $postBody) && array_key_exists("MaxCapacity", $postBody)
+				&& array_key_exists("DisabledSpots", $postBody)&& array_key_exists("ReservationSpots", $postBody)
+			&& array_key_exists("LotStatus", $postBody)&& array_key_exists("isReservable", $postBody)) {
+				
 			$lotname = $postBody->$lotname;
 			$max = $postBody->$max;
 			$dspots = $postBody->$dspots;
@@ -372,7 +416,11 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$reservable = $postBody->$reservable;
 
 			echo newLot($lotname, $max, $dspots, $rspots, $lstatus, $reservable);
-			 
+			}
+			else{
+                echo "Check your json format";
+				http_response_code(400);
+            }
 		}
 		/***
 		*This will get the add a new schedule to the database
@@ -392,6 +440,9 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$starttime = "StartTime";
 			$endtime = "EndTime";
 			
+			if(array_key_exists("LotID", $postBody) && array_key_exists("PermitID", $postBody)
+				&& array_key_exists("StartTime", $postBody)&& array_key_exists("StartTime", $postBody)) {
+					
 			$lotid = $postBody->$lotid;
 			$pid = $postBody->$pid;
 			$starttime = $postBody->$starttime;
@@ -401,6 +452,11 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$EndTime = date(" H:i:s", substr($endtime, 0, 10));
 
 			echo newSchedule($lotid, $pid, $StartTime, $EndTime);
+			}
+			else{
+                echo "Check your json format";
+				http_response_code(400);
+            }
 			 
 		}
 		/***
@@ -418,12 +474,17 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$id = "id";
 			$message = "message";
 			$type = "type";
-			
+			if(array_key_exists("message", $postBody) && array_key_exists("id", $postBody)&& array_key_exists("type", $postBody)) {
 			$id = $postBody->$id;
 			$message = $postBody->$message;
 			$type = $postBody->$type;
-
+			
 			echo newNotification($id, $message, $type);
+			}
+			else{
+                echo "Check your json format";
+				http_response_code(400);
+            }
 			 
 		}
 		else{
