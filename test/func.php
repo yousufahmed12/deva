@@ -28,7 +28,7 @@ function getTable($table){
 *This will add a user to the user table
 *
 *Input is the name, email,username,password,isDisable which is tinybit, status which is tinybit
-*Output will be the numeber of successful query
+*Output will be the number of successful queries
 ***/	
 function postUser($name, $email,$username,$password, $isDisable,$status){
 	include 'config.php';
@@ -45,7 +45,7 @@ function postUser($name, $email,$username,$password, $isDisable,$status){
 }
 
 /***
-*This will get a spefic user from the user table
+*This will get a specific user from the user table
 *
 *Input is the userid
 *Output will be the user info in a json format
@@ -70,7 +70,7 @@ function getUser($id){
 }
 		
 /***
-*This will update a spefic users name
+*This will update a specific users name
 *
 *Input is the userid and the new name
 *Output will be the updated user info in a json format
@@ -101,10 +101,10 @@ function putName($id,$newName){
 }
 
 /***
-*This will delete a spefic user from the user table
+*This will delete a specific user from the user table
 *
 *Input is the userid
-*Output will be the numeber of successful query
+*Output will be the number of successful queries
 ***/
 function deleteUser($id){
 	include 'config.php';
@@ -252,8 +252,8 @@ function getAvailableWithType($StartTime,$EndTime,$Date,$Type){
 /***
 *This will add a lot to the lot table
 *
-*Input is the schedule id, lot name, max capacity ,disabledspot, reservation spots, lot status which is tinybit, reservability status which is tinybit
-*Output will be the numeber of successful query
+*Input is the  lot name, max capacity ,disabledspot, reservation spots, lot status which is tinybit, reservability status which is tinybit
+*Output will be the number of successful queries
 ***/	
 
 function newLot($lotname, $max, $dspots, $rspots, $lstatus, $reservable){
@@ -272,7 +272,7 @@ function newLot($lotname, $max, $dspots, $rspots, $lstatus, $reservable){
 *This will update a lot max capacity , disabledspots , and reservation spots in the lot table
 *
 *Input is the lot id, max capacity ,disabledspot, reservation spots
-*Output will be the numeber of successful query
+*Output will be the number of successful queries
 ***/	
 function updateLot($id, $max, $dspots, $rspots){
 	include 'config.php';
@@ -286,10 +286,10 @@ function updateLot($id, $max, $dspots, $rspots){
 	}
 }
 /***
-*This will update a lot disabledspots in the lot table
+*This will update a lot disabled spots in the lot table
 *
-*Input is the lot id, disabledspot
-*Output will be the numeber of successful query
+*Input is the lot id, disabled spot
+*Output will be the number of successful queries
 ***/	
 function updateLotDSpots($id, $dspots){
 	include 'config.php';
@@ -306,7 +306,7 @@ function updateLotDSpots($id, $dspots){
 *This will update a lot  reservation spots in the lot table
 *
 *Input is the lot id, reservation spots
-*Output will be the numeber of successful query
+*Output will be the number of successful queries
 ***/	
 function updateLotRSpots($id, $rspots){
 	include 'config.php';
@@ -324,7 +324,7 @@ function updateLotRSpots($id, $rspots){
 *
 *Input is the lot id, permit id, startime ,endtime
 *Permit id: 1 Commuter, 2 Resident 3 Employee 
-*Output will be the numeber of successful query
+*Output will be the number of successful queries
 ***/	
 
 function newSchedule($lotid, $pid, $starttime, $endtime){
@@ -343,7 +343,7 @@ function newSchedule($lotid, $pid, $starttime, $endtime){
 *This will remove a schedule from the schedule table
 *
 *Input is the schedule id
-*Output will be the numeber of successful query
+*Output will be the number of successful queries
 ***/	
 function removeSchedule($id){
 	include 'config.php';
@@ -360,7 +360,7 @@ function removeSchedule($id){
 *This will change the schedule of a lot to a schedule from the schedule table
 *
 *Input is the lot id,schedule id
-*Output will be the numeber of successful query
+*Output will be the number of successful queries
 ***/	
 function changeLotSchedule($lotid, $id){
 	include 'config.php';
@@ -377,7 +377,7 @@ function changeLotSchedule($lotid, $id){
 *This will remove a lot from the lot table
 *
 *Input is the lot id
-*Output will be the numeber of successful query
+*Output will be the number of successful queries
 ***/	
 function removeLot($id){
 	include 'config.php';
@@ -394,8 +394,7 @@ function removeLot($id){
 *These will change the status of a lot to open or closed
 *
 *Input is the lot id
-*Output will be the numeber of successful query
-*NEEDS FIXING BOOLEAN
+*Output will be the number of successful queries
 ***/	
 function closeLot($id){
 	include 'config.php';
@@ -428,8 +427,7 @@ function openLot($id){
 *These will update the status of a lot to allow a lot to be reservable or not
 *
 *Input is the lot id
-*Output will be the numeber of successful query
-*NEEDS FIXING BOOLEAN
+*Output will be the number of successful queries
 ***/	
 function unreserveLot($id){
 	include 'config.php';
@@ -460,8 +458,7 @@ function reserveLot($id){
 *These will update the User status to prevent user from making reservation
 *
 *Input is the user id
-*Output will be the numeber of successful query
-*NEEDS FIXING BOOLEAN
+*Output will be the number of successful queries
 ***/	
 function lockUser($id){
 	include 'config.php';
@@ -540,7 +537,7 @@ function getUserStatus($id){
 *This will add a complaint to the complaints table
 *
 *Input is the user id, report
-*Output will be the numeber of successful query
+*Output will be the number of successful queries
 ***/	
 function newComplaint($uid, $report){
 	include 'config.php';
@@ -557,9 +554,7 @@ function newComplaint($uid, $report){
 *This will remove a complaint from the commplaints table
 *
 *Input is the complaint id
-*Output will be the numeber of successful query
-*
-*NEEDS FIXING BOOLEAN
+*Output will be the number of successful queries
 ***/	
 function removeComplaint($id){
 	include 'config.php';
@@ -580,7 +575,7 @@ function removeComplaint($id){
 *This will add a reservation to the reservation table
 *
 *Input is the lot id, user id, date, startime ,endtime
-*Output will be the numeber of successful query
+*Output will be the number of successful queries
 ***/	
 function newReservation($lotid, $uid, $date,$starttime, $endtime){
 	include 'config.php';
@@ -598,7 +593,7 @@ function newReservation($lotid, $uid, $date,$starttime, $endtime){
 *This will cancel a reservation from the reservation table
 *
 *Input is the reservation id
-*Output will be the numeber of successful query
+*Output will be the number of successful queries
 ***/
 function cancelReservation($id){
 	include 'config.php';
@@ -616,7 +611,7 @@ function cancelReservation($id){
 *and starttimes that have yet to start
 *
 *Input is the lot id
-*Output will be the numeber of successful query
+*Output will be the number of successful queries
 ***/
 function cancelLotReservation($id){
 	include 'config.php';
@@ -658,7 +653,7 @@ function getUserReservations($id){
 *This will get a user id from the user table with an email
 *
 *Input is user email
-*Output will be the numeber of successful query
+*Output will be the number of successful queries
 ***/
 function getUserIdEmail($userEmail){
 

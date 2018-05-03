@@ -168,7 +168,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 		*The url will be (table = user)
 		*
 		*Input will be a post body with the user info
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		if($_GET['table'] == "user"){
 			$postBody = file_get_contents("php://input");
@@ -204,7 +204,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 		*The url will be (table = userWithpermit)
 		*
 		*Input will be a post body with the user info
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		else if($_GET['table'] == "userWithpermit"){
 			$postBody = file_get_contents("php://input");
@@ -249,7 +249,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 		*The url will be (table = complaints)
 		*
 		*Input will be a post body with the complaint info
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		else if($_GET['table'] == "complaints"){
 			$postBody = file_get_contents("php://input");
@@ -278,7 +278,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 		*The url will be (table = reservation)
 		*
 		*Input will be a post body with the reservation info
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		else if($_GET['table'] == "reservation"){
 			$postBody = file_get_contents("php://input");
@@ -309,6 +309,14 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 				http_response_code(400);
             }
 		}
+		/***
+		*This will get the add a new reservation to the database
+		*
+		*The url will be (table = reserveWithEmail)
+		*
+		*Input will be a post body with the reservation info
+		*Output will be a success or failure
+		***/
 		else if($_GET['table'] == "reserveWithEmail"){
 			$postBody = file_get_contents("php://input");
 			$postBody = json_decode($postBody);
@@ -391,7 +399,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 		*The url will be (table = parkinglot)
 		*
 		*Input will be a post body with the lot info
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		else if($_GET['table'] == "parkinglot"){
 			$postBody = file_get_contents("php://input");
@@ -429,7 +437,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "POST"){
 		*
 		*Input will be a post body with the schedule info
 		*Permit id: 1 Commuter, 2 Resident 3 Employee 
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		else if($_GET['table'] == "schedule"){
 			$postBody = file_get_contents("php://input");
@@ -503,7 +511,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		*The url will be (table = user & id = 'specfic user id' & newName = 'the new name you want to add')
 		*
 		*Input will be the user id and the new name.
-		*Output will be a boolean of true or false
+		*Output will be the updated user info in a json format
 		***/
 		if($_GET['table'] == "user"){
 			$table = $_GET['table'];
@@ -521,10 +529,10 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		/***
 		*This will update a lot  max capacity , number of disabled spots, and number of reservation spots
 		*
-		*The url will be (function = updateLot & id = 'specfic lot id' & m = 'new max capacicity' & d = 'new # of disabled spots' & r = 'new # of reservation spots' )
+		*The url will be (function = updateLot & id = 'specfic lot id' & max = 'new max capacicity' & dspots = 'new # of disabled spots' & rspots = 'new # of reservation spots' )
 		*
 		*Input will be the lot id,max capacity , number of disabled spots, and number of reservation spots
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		if($_GET['function'] == "updateLot"){
 			$id = $_GET['id'];
@@ -546,7 +554,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		*The url will be (function = updateLot & id = 'specfic lot id' & amount = 'new # of disabled spots, or reservation spots'  )
 		*
 		*Input will be the lot id, number of disabled spots, or number of reservation spots
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 	
 		if($_GET['function'] == "updateLotDSpots"){
@@ -575,7 +583,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		*The url will be (function = changeLotSchedule & id = 'specfic schedule id' & lotid = 'the new lot you want to add the schedule to')
 		*
 		*Input will be the schedule id and the lot id.
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		if($_GET['function'] == "changeLotSchedule"){
 			$lotid = $_GET['lotid'];
@@ -595,7 +603,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		*The url will be (id = lotid & isReservable = 'boolean of 0 or 1' & ReservationSpots = 'the new lot number')
 		*
 		*Input LotID, isReservable, ReservationSpots
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		
 			$id = $_GET['id'];
@@ -613,7 +621,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		*The url will be (function = unlockUser & id = 'specfic user id' )
 		*
 		*Input will be the user id
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		if($_GET['function'] == "unlockUser"){
 			$id = $_GET['id'];
@@ -626,7 +634,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		*The url will be (function = lockUser & id = 'specfic user id' )
 		*
 		*Input will be the user id
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		else if($_GET['function'] == "lockUser"){
 			$id = $_GET['id'];
@@ -639,7 +647,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		*The url will be (function = reserveLot & id = 'specfic parkinglot id' )
 		*
 		*Input will be the parkinglot id
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		else if($_GET['function'] == "reserveLot"){
 			$id = $_GET['id'];
@@ -652,7 +660,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		*The url will be (function = unreserveLot & id = 'specfic parkinglot id' )
 		*
 		*Input will be the parkinglot id
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		else if($_GET['function'] == "unreserveLot"){
 			$id = $_GET['id'];
@@ -665,7 +673,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		*The url will be (function = openLot & id = 'specfic parkinglot id' )
 		*
 		*Input will be the parkinglot id
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		else if($_GET['function'] == "openLot"){
 			$id = $_GET['id'];
@@ -678,7 +686,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		*The url will be (function = closeLot & id = 'specfic parkinglot id' )
 		*
 		*Input will be the parkinglot id
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		else if($_GET['function'] == "closeLot"){
 			$id = $_GET['id'];
@@ -691,7 +699,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "PUT"){
 		*The url will be (function = cancelReservation & id = 'specfic reservation id' )
 		*
 		*Input will be the Reservation id
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		else if($_GET['function'] == "cancelReservation"){
 			$id = $_GET['id'];
@@ -714,7 +722,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
 		*The url will be (remove = user & id = 'specfic user id')
 		*
 		*Input will the user id
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		if($_GET['remove'] == "user"){
 			$id = $_GET['id'];
@@ -727,7 +735,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
 		*The url will be (remove = complaints & id = 'specfic complaint id')
 		*
 		*Input will the complaints id
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		else if($_GET['remove'] == "complaints"){
 			
@@ -741,7 +749,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
 		*The url will be (remove = parkinglot & id = 'specfic lot id')
 		*
 		*Input will the lot id
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		else if($_GET['remove'] == "parkinglot"){
 			
@@ -755,7 +763,7 @@ else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
 		*The url will be (remove = schedule & id = 'specfic schedule id')
 		*
 		*Input will the schedule id
-		*Output will be a boolean of true or false
+		*Output will be a success or failure
 		***/
 		else if($_GET['remove'] == "schedule"){
 			
